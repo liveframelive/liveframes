@@ -3,1259 +3,497 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="description" content="MemoreLive — Turn your favourite photos into a living keepsake. Scan the frame. Relive the moment."/>
+<meta name="description" content="MemoreLive — A framed photo with a hidden QR code that unlocks your memories forever."/>
 <title>MemoreLive — Scan the Frame. Relive the Moment.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Noto+Sans+Sinhala:wght@300;400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ══ RESET ══ */
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 :root{
-  --cream:#faf6f0;
-  --cream2:#f3ebe0;
-  --cream3:#ece0d0;
-  --ink:#160e08;
-  --ink-soft:#4a3428;
-  --ink-mute:#8a7060;
-  --rose:#b86858;
-  --rose-d:#8a4838;
-  --rose-l:#e8b8a8;
-  --gold:#b89050;
-  --gold-l:#d8b878;
-  --sage:#7a8a68;
-  --line:rgba(30,20,16,.1);
-  --shadow:0 32px 64px -16px rgba(80,50,30,.18);
+  --cream:#faf7f2;
+  --cream2:#f3ece0;
+  --cream3:#e8dece;
+  --ink:#18100a;
+  --ink-soft:#4a3828;
+  --ink-mute:#8a7868;
+  --rose:#b86050;
+  --rose-d:#8a4030;
+  --gold:#b09048;
+  --line:rgba(24,16,10,.1);
 }
-body{
-  font-family:'Manrope',sans-serif;
-  background:var(--cream);
-  color:var(--ink);
-  overflow-x:hidden;
-  cursor:none;
-}
-/* ══ CUSTOM CURSOR ══ */
-.cur{position:fixed;width:8px;height:8px;background:var(--rose);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;mix-blend-mode:multiply;}
-.cur-ring{position:fixed;width:32px;height:32px;border:1px solid var(--rose);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .4s cubic-bezier(.2,.7,.2,1);opacity:.4;}
-/* ══ NOISE OVERLAY ══ */
-body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='250' height='250'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0 0.1 0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");opacity:.1;pointer-events:none;z-index:1;mix-blend-mode:multiply;}
-main{position:relative;z-index:2;}
+body{font-family:'Manrope',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
 
-/* ══ NAV ══ */
+/* NAV */
 nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  padding:18px clamp(20px,5vw,60px);
+  position:fixed;top:0;left:0;right:0;z-index:500;height:56px;
   display:flex;align-items:center;justify-content:space-between;
-  background:rgba(250,246,240,.9);
-  backdrop-filter:blur(16px);
+  padding:0 clamp(16px,4vw,48px);
+  background:rgba(250,247,242,.96);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--line);
-  transition:all .3s;
 }
-.nav-logo{
-  font-family:'Cormorant Garamond',serif;
-  font-style:italic;font-weight:400;
-  font-size:22px;color:var(--rose);
-  letter-spacing:-.01em;text-decoration:none;
-}
-.nav-logo span{font-style:normal;font-size:11px;font-family:'Manrope',sans-serif;color:var(--ink-mute);margin-left:8px;letter-spacing:.1em;text-transform:uppercase;}
-.nav-links{display:flex;align-items:center;gap:28px;}
-.nav-links a{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);font-weight:600;text-decoration:none;transition:color .2s;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:var(--rose);text-decoration:none;}
+.nav-links{display:flex;gap:0;}
+.nav-links a{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;padding:0 16px;height:56px;display:flex;align-items:center;transition:color .15s;}
 .nav-links a:hover{color:var(--rose);}
-.nav-cta{background:var(--rose);color:#fff;padding:10px 22px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:all .2s;}
-.nav-cta:hover{background:var(--rose-d);transform:translateY(-1px);}
-.nav-mobile-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--ink);font-size:22px;padding:4px 8px;line-height:1;}
+.nav-cta{background:var(--rose);color:#fff;border-radius:50px;padding:9px 20px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:background .15s;white-space:nowrap;}
+.nav-cta:hover{background:var(--rose-d);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--ink);padding:4px 8px;line-height:1;}
+.mob-menu{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(250,247,242,.98);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);z-index:499;flex-direction:column;padding:4px 0 12px;}
+.mob-menu.open{display:flex;}
+.mob-menu a{font-size:13px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:14px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);}
+.mob-menu a:last-child{border:none;color:var(--rose);}
 
-/* ══ HERO ══ */
-.hero{
-  min-height:100svh;
-  padding:clamp(100px,18vw,140px) clamp(20px,5vw,60px) clamp(60px,10vw,100px);
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:clamp(40px,6vw,80px);
-  align-items:center;
-  position:relative;overflow:hidden;
-}
-.hero-bg{
-  position:absolute;inset:0;z-index:-1;
-  background:
-    radial-gradient(ellipse 800px 600px at 80% 20%,rgba(184,104,88,.1) 0%,transparent 60%),
-    radial-gradient(ellipse 600px 800px at 10% 80%,rgba(184,144,80,.08) 0%,transparent 55%),
-    radial-gradient(ellipse 400px 400px at 50% 50%,rgba(250,246,240,.8) 0%,transparent 70%);
-}
-.hero-content{position:relative;z-index:2;}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:10px;letter-spacing:.45em;text-transform:uppercase;
-  color:var(--rose);margin-bottom:24px;
-  opacity:0;animation:fadeUp .8s .2s ease forwards;
-}
-.hero-eyebrow::before{content:"";width:28px;height:1px;background:var(--rose);opacity:.6;}
-.hero-title{
-  font-family:'Cormorant Garamond',serif;
-  font-weight:300;font-style:italic;
-  font-size:clamp(48px,7vw,82px);
-  line-height:.95;letter-spacing:-.02em;
-  color:var(--ink);margin-bottom:28px;
-  opacity:0;animation:fadeUp .9s .35s ease forwards;
-}
-.hero-title strong{
-  font-weight:400;font-style:normal;
-  display:block;color:var(--rose);
-}
-.hero-title em{color:var(--gold);}
-.hero-sub{
-  font-size:clamp(15px,1.6vw,17px);line-height:1.75;
-  color:var(--ink-soft);max-width:42ch;margin-bottom:36px;
-  font-weight:500;
-  opacity:0;animation:fadeUp .8s .5s ease forwards;
-}
-.hero-actions{
-  display:flex;gap:14px;flex-wrap:wrap;
-  opacity:0;animation:fadeUp .8s .65s ease forwards;
-}
-.btn-primary{
-  background:var(--rose);color:#fff;
-  padding:14px 32px;border-radius:50px;
-  font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
-  transition:all .2s;box-shadow:0 8px 24px -8px rgba(184,104,88,.4);
-}
-.btn-primary:hover{background:var(--rose-d);transform:translateY(-2px);box-shadow:0 14px 32px -8px rgba(184,104,88,.45);}
-.btn-secondary{
-  background:transparent;color:var(--ink-soft);
-  padding:14px 28px;border-radius:50px;
-  font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  text-decoration:none;border:1px solid var(--line);
-  transition:all .2s;
-}
-.btn-secondary:hover{border-color:var(--rose);color:var(--rose);}
-.hero-trust{
-  margin-top:40px;display:flex;align-items:center;gap:16px;
-  opacity:0;animation:fadeUp .8s .8s ease forwards;
-}
-.hero-trust-stars{color:var(--gold);font-size:14px;letter-spacing:2px;}
-.hero-trust-text{font-size:12px;color:var(--ink-soft);letter-spacing:.04em;font-weight:500;}
+/* HERO */
+.hero{padding-top:56px;display:grid;grid-template-columns:1fr 1fr;min-height:100svh;}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:clamp(40px,7vw,72px) clamp(24px,5vw,64px);}
+.hero-tag{font-size:10px;font-weight:700;letter-spacing:.38em;text-transform:uppercase;color:var(--rose);margin-bottom:18px;display:flex;align-items:center;gap:10px;opacity:0;animation:up .7s .1s ease forwards;}
+.hero-tag::before{content:"";width:22px;height:1px;background:var(--rose);}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(42px,5.5vw,70px);line-height:.95;letter-spacing:-.02em;margin-bottom:20px;opacity:0;animation:up .8s .2s ease forwards;}
+.hero-h1 strong{display:block;font-weight:400;font-style:normal;color:var(--rose);}
+.hero-p{font-size:clamp(14px,1.3vw,16px);line-height:1.7;color:var(--ink-soft);font-weight:500;max-width:36ch;margin-bottom:28px;opacity:0;animation:up .7s .35s ease forwards;}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:up .7s .45s ease forwards;}
+.btn-rose{background:var(--rose);color:#fff;border-radius:50px;padding:12px 26px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:background .15s;display:inline-flex;align-items:center;gap:7px;}
+.btn-rose:hover{background:var(--rose-d);}
+.btn-outline{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line);border-radius:50px;padding:12px 22px;font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;transition:all .15s;}
+.btn-outline:hover{border-color:var(--rose);color:var(--rose);}
+.hero-trust{margin-top:32px;font-size:12px;color:var(--ink-mute);font-weight:500;display:flex;align-items:center;gap:8px;opacity:0;animation:up .7s .55s ease forwards;}
+.stars{color:var(--gold);letter-spacing:2px;}
+.hero-right{position:relative;overflow:hidden;background:var(--cream2);}
+.hero-img-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:40px;}
+.frame-mockup{width:min(300px,78%);position:relative;opacity:0;animation:scaleIn 1s .3s cubic-bezier(.2,.8,.2,1) forwards;}
+.frame-outer{background:#1a1208;border-radius:12px;padding:14px;box-shadow:0 40px 80px rgba(0,0,0,.45),0 8px 20px rgba(0,0,0,.2);}
+.frame-inner{background:var(--cream);border-radius:6px;aspect-ratio:4/5;overflow:hidden;}
+.frame-photo{width:100%;height:72%;background:linear-gradient(135deg,#d4c4b0,#c0a890);display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(60,40,20,.3);}
+.frame-caption{padding:14px 12px;text-align:center;}
+.frame-caption h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--ink);margin-bottom:3px;}
+.frame-caption p{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-mute);}
+.qr-float{position:absolute;bottom:-14px;right:-14px;background:#fff;border-radius:10px;padding:10px 12px;box-shadow:0 12px 32px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px;}
+.qr-box{width:36px;height:36px;background:var(--ink);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qr-text strong{display:block;font-size:11px;color:var(--ink);}
+.qr-text span{font-size:10px;color:var(--ink-mute);}
+.float-tag{position:absolute;top:24px;left:24px;background:var(--rose);color:#fff;border-radius:50px;padding:6px 14px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;animation:float 4s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 
-/* Hero visual */
-.hero-visual{
-  position:relative;
-  opacity:0;animation:fadeScale 1s .4s cubic-bezier(.2,.8,.2,1) forwards;
-}
-.hero-frame-mockup{
-  position:relative;width:100%;max-width:480px;margin:0 auto;
-}
-.frame-outer{
-  background:linear-gradient(145deg,#2a2018,#1a1208);
-  border-radius:16px;padding:16px;
-  box-shadow:0 40px 80px -20px rgba(20,10,5,.5),0 8px 24px -8px rgba(20,10,5,.3),inset 0 1px 0 rgba(255,255,255,.08);
-}
-.frame-inner{
-  background:var(--cream2);border-radius:8px;overflow:hidden;
-  aspect-ratio:4/5;position:relative;
-}
-.frame-photo{
-  width:100%;height:70%;
-  background:linear-gradient(135deg,#d8c8b8,#c8b4a0);
-  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
-}
-.frame-photo::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 50%,rgba(0,0,0,.1) 100%);
-}
-.frame-photo-placeholder{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(100,70,50,.45);position:relative;z-index:1;}
-.frame-info{padding:16px;text-align:center;}
-.frame-info-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--ink);margin-bottom:4px;}
-.frame-info-sub{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-mute);}
-.qr-badge{
-  position:absolute;bottom:-16px;right:-16px;
-  background:#fff;border-radius:12px;padding:12px;
-  box-shadow:0 16px 40px -8px rgba(30,20,10,.25);
-  display:flex;align-items:center;gap:10px;
-}
-.qr-box{
-  width:44px;height:44px;border-radius:6px;
-  background:var(--ink);display:grid;place-items:center;flex-shrink:0;
-}
-.qr-box svg{width:28px;height:28px;}
-.qr-text{font-size:10px;}
-.qr-text strong{display:block;font-size:11px;color:var(--ink);margin-bottom:2px;}
-.qr-text span{color:var(--ink-mute);letter-spacing:.04em;}
-.floating-badge{
-  position:absolute;top:-20px;left:-20px;
-  background:var(--rose);color:#fff;
-  border-radius:50px;padding:8px 16px;
-  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  box-shadow:0 8px 24px -4px rgba(184,104,88,.45);
-  animation:floatBadge 4s ease-in-out infinite;
-}
-@keyframes floatBadge{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.particles-hero{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.p{position:absolute;border-radius:50%;opacity:.25;animation:floatP linear infinite;}
-@keyframes floatP{0%{transform:translateY(100%) rotate(0deg)}100%{transform:translateY(-200%) rotate(720deg)}}
+/* TRUST BAR */
+.trust-bar{background:var(--ink);color:rgba(250,247,242,.65);padding:13px clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:center;gap:clamp(16px,3vw,40px);flex-wrap:wrap;}
+.trust-item{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.trust-item::before{content:"✓";color:var(--rose);font-weight:700;}
 
-/* ══ SECTION COMMON ══ */
-section{padding:clamp(60px,12vw,120px) clamp(20px,5vw,60px);}
-.section-tag{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:10px;letter-spacing:.45em;text-transform:uppercase;
-  color:var(--rose);margin-bottom:18px;
-}
-.section-tag::before,.section-tag::after{content:"";width:20px;height:1px;background:var(--rose);opacity:.5;}
-.section-title{
-  font-family:'Cormorant Garamond',serif;font-weight:400;
-  font-size:clamp(32px,5vw,52px);line-height:1.05;
-  letter-spacing:-.01em;margin-bottom:16px;
-}
-.section-title em{color:var(--rose);font-style:italic;}
-.section-sub{font-size:15px;line-height:1.75;color:var(--ink-soft);max-width:44ch;font-weight:500;}
+/* SECTION COMMON */
+.sec{padding:clamp(56px,9vw,96px) clamp(24px,5vw,64px);}
+.sec-inner{max-width:1080px;margin:0 auto;}
+.sec-tag{font-size:10px;font-weight:700;letter-spacing:.38em;text-transform:uppercase;color:var(--rose);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.sec-tag::before{content:"";width:18px;height:1px;background:var(--rose);}
+.sec-h{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(26px,3.5vw,42px);line-height:1.1;}
+.sec-h em{color:var(--rose);}
 
-/* ══ HOW IT WORKS ══ */
-.hiw{background:var(--cream);}
-.hiw-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:32px;margin-top:56px;
-}
-.hiw-step{position:relative;}
-.hiw-num{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:64px;line-height:1;color:var(--rose-l);
-  opacity:.4;margin-bottom:-20px;
-}
-.hiw-icon{
-  width:52px;height:52px;border-radius:14px;
-  background:linear-gradient(135deg,var(--rose),var(--rose-d));
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:16px;
-  box-shadow:0 8px 20px -6px rgba(184,104,88,.4);
-}
-.hiw-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.8;}
-.hiw-step h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;margin-bottom:8px;}
-.hiw-step p{font-size:13px;line-height:1.7;color:var(--ink-soft);font-weight:500;}
-.hiw-connector{
-  position:absolute;top:26px;right:-16px;
-  width:32px;height:1px;background:linear-gradient(to right,var(--rose-l),transparent);
-  display:none;
-}
-@media(min-width:900px){.hiw-connector{display:block;}}
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:44px;}
+.step-n{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:44px;line-height:1;color:var(--rose);opacity:.25;margin-bottom:-6px;}
+.step-icon{width:42px;height:42px;border-radius:10px;background:var(--rose);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.step-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;}
+.step h3{font-size:14px;font-weight:700;margin-bottom:5px;}
+.step p{font-size:12px;color:var(--ink-soft);line-height:1.6;font-weight:500;}
 
-/* ══ OCCASIONS ══ */
-.occasions{background:var(--cream2);}
-.occasions-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:16px;margin-top:48px;
-}
-.occ-card{
-  background:var(--cream);border:1px solid var(--line);
-  border-radius:16px;padding:24px 20px;text-align:center;
-  transition:all .3s cubic-bezier(.2,.7,.2,1);
-  cursor:default;
-}
-.occ-card:hover{
-  transform:translateY(-6px);
-  box-shadow:var(--shadow);
-  border-color:rgba(184,104,88,.2);
-}
-.occ-emoji{font-size:32px;margin-bottom:12px;display:block;}
-.occ-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;margin-bottom:4px;}
-.occ-desc{font-size:12px;color:var(--ink-soft);letter-spacing:.02em;line-height:1.5;font-weight:500;}
+/* OCCASIONS */
+.occ-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:36px;}
+.occ{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:18px 14px;text-align:center;transition:all .2s;cursor:default;}
+.occ:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(24,16,10,.09);border-color:rgba(184,96,80,.2);}
+.occ-emoji{font-size:26px;display:block;margin-bottom:8px;}
+.occ-name{font-size:13px;font-weight:700;color:var(--ink);}
 
-/* ══ DEMO / EXPERIENCE ══ */
-.experience{background:var(--ink);color:var(--cream);overflow:hidden;position:relative;}
-.experience::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(ellipse 800px 600px at 20% 50%,rgba(184,104,88,.15) 0%,transparent 60%),
-             radial-gradient(ellipse 600px 400px at 80% 50%,rgba(184,144,80,.1) 0%,transparent 60%);
-}
-.experience-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center;}
-.exp-content .section-tag{color:var(--rose-l);}
-.exp-content .section-tag::before,.exp-content .section-tag::after{background:var(--rose-l);}
-.exp-content .section-title{color:var(--cream);}
-.exp-content .section-sub{color:rgba(250,246,240,.65);}
-.exp-features{margin-top:36px;display:flex;flex-direction:column;gap:20px;}
-.exp-feat{display:flex;gap:16px;align-items:flex-start;}
-.exp-feat-icon{
-  width:38px;height:38px;border-radius:10px;flex-shrink:0;
-  background:rgba(184,104,88,.2);border:1px solid rgba(184,104,88,.3);
-  display:flex;align-items:center;justify-content:center;
-}
-.exp-feat-icon svg{width:18px;height:18px;stroke:var(--rose-l);fill:none;stroke-width:1.8;}
-.exp-feat h4{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--cream);}
-.exp-feat p{font-size:12px;color:rgba(250,246,240,.75);line-height:1.6;font-weight:500;}
-.exp-visual{position:relative;}
-.phone-mockup{
-  width:260px;margin:0 auto;
-  background:#0a0806;border-radius:40px;
-  padding:14px;
-  box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06);
-}
-.phone-notch{height:24px;background:#0f0d0b;border-radius:40px 40px 0 0;margin-bottom:-4px;position:relative;}
-.phone-notch::after{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;}
-.phone-screen{
-  background:var(--cream);border-radius:28px;overflow:hidden;
-  height:480px;position:relative;
-}
-.phone-screen-hero{
-  height:60%;background:linear-gradient(135deg,#d8c8b4,#c4b09a);
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(60,40,20,.4);position:relative;
-}
-.phone-screen-hero::after{
-  content:"";position:absolute;bottom:0;left:0;right:0;height:40%;
-  background:linear-gradient(to top,var(--cream),transparent);
-}
-.phone-screen-content{padding:12px 14px;text-align:center;}
-.phone-screen-content h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;line-height:1;margin-bottom:4px;color:var(--ink);}
-.phone-screen-content p{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-mute);}
-.phone-screen-scroll{
-  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
-  font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-mute);
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-}
-.phone-screen-scroll::after{content:"";width:1px;height:20px;background:var(--ink-mute);opacity:.4;}
-.scan-prompt{
-  position:absolute;bottom:-20px;right:-20px;
-  background:var(--rose);color:#fff;
-  border-radius:12px;padding:12px 16px;
-  font-size:10px;font-weight:600;letter-spacing:.06em;
-  box-shadow:0 12px 32px -8px rgba(184,104,88,.5);
-  animation:floatBadge 3s ease-in-out infinite;
-  white-space:nowrap;
-}
+/* PRODUCT CONFIGURATOR */
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,5vw,64px);align-items:start;}
+.prod-sticky{position:sticky;top:72px;}
+.prod-preview{background:var(--cream2);border:1px solid var(--line);border-radius:18px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.conf-frame{border-radius:10px;padding:12px;box-shadow:0 24px 56px rgba(0,0,0,.35);transition:background .4s;width:180px;}
+.conf-mat{background:var(--cream);border-radius:5px;aspect-ratio:4/5;overflow:hidden;position:relative;}
+.conf-photo{width:100%;height:70%;background:linear-gradient(135deg,#d4c4b0,#bea88a);display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(60,40,20,.3);}
+.conf-caption{padding:10px;text-align:center;}
+.conf-caption h4{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--ink);margin-bottom:2px;}
+.conf-caption p{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mute);}
+.conf-qr-badge{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.7);border-radius:4px;padding:3px;display:flex;}
+.prod-preview-label{text-align:center;font-size:12px;font-weight:600;color:var(--ink-soft);}
+/* Options side */
+.prod-name{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(24px,2.8vw,34px);line-height:1.1;margin-bottom:8px;}
+.prod-name em{color:var(--rose);font-style:italic;}
+.prod-rating{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:12px;color:var(--ink-soft);font-weight:500;}
+.prod-price{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--rose);line-height:1;margin-bottom:3px;}
+.prod-price-note{font-size:11px;color:var(--ink-mute);font-weight:500;margin-bottom:18px;}
+.div{height:1px;background:var(--line);margin:16px 0;}
+.opt-lbl{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:9px;}
+.type-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.type-pill{flex:1;min-width:90px;padding:10px 12px;border-radius:50px;border:1.5px solid var(--line);background:var(--cream2);cursor:pointer;transition:all .15s;text-align:center;}
+.type-pill:hover{border-color:rgba(184,96,80,.4);}
+.type-pill.sel{border-color:var(--rose);background:rgba(184,96,80,.07);}
+.type-pill-name{font-size:11px;font-weight:700;color:var(--ink);display:block;}
+.type-pill-price{font-size:13px;color:var(--rose);font-weight:700;}
+.color-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.cswatch{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 8px;border-radius:8px;border:1.5px solid transparent;transition:all .15s;}
+.cswatch:hover{border-color:rgba(184,96,80,.3);}
+.cswatch.sel{border-color:var(--rose);background:rgba(184,96,80,.06);}
+.cdot{width:26px;height:26px;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.cswatch span{font-size:10px;color:var(--ink-soft);font-weight:600;white-space:nowrap;}
+.includes{display:flex;flex-direction:column;gap:7px;margin-bottom:22px;}
+.inc{display:flex;gap:9px;font-size:12px;color:var(--ink-soft);font-weight:500;line-height:1.5;align-items:flex-start;}
+.inc::before{content:"✓";color:var(--rose);font-weight:700;flex-shrink:0;}
+.prod-cta{width:100%;padding:15px;border-radius:50px;background:var(--rose);color:#fff;border:none;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;box-shadow:0 8px 24px rgba(184,96,80,.3);}
+.prod-cta:hover{background:var(--rose-d);transform:translateY(-1px);}
+.prod-secure{text-align:center;margin-top:9px;font-size:11px;color:var(--ink-mute);font-weight:500;}
+.delivery{margin-top:14px;background:var(--cream2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.del-row{display:flex;align-items:center;gap:10px;}
+.del-row svg{stroke:var(--rose);fill:none;stroke-width:1.8;width:15px;height:15px;flex-shrink:0;}
+.del-row div{display:flex;flex-direction:column;gap:1px;}
+.del-row strong{font-size:12px;font-weight:700;color:var(--ink);}
+.del-row small{font-size:11px;color:var(--ink-mute);}
 
-/* ══ PACKAGES ══ */
-.packages{background:var(--cream);}
-.packages-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:24px;margin-top:56px;
-  align-items:start;
-}
-.pkg-card{
-  background:var(--cream2);border:1px solid var(--line);
-  border-radius:24px;padding:32px;
-  position:relative;transition:all .3s cubic-bezier(.2,.7,.2,1);
-}
-.pkg-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
-.pkg-card.featured{
-  background:var(--ink);color:var(--cream);
-  border-color:transparent;
-  box-shadow:var(--shadow);
-}
-.pkg-badge{
-  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-  background:var(--rose);color:#fff;
-  border-radius:50px;padding:5px 16px;
-  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  white-space:nowrap;
-}
-.pkg-icon{font-size:28px;margin-bottom:16px;display:block;}
-.pkg-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin-bottom:6px;}
-.pkg-card.featured .pkg-name{color:var(--cream);}
-.pkg-tagline{font-size:12px;color:var(--ink-mute);margin-bottom:24px;letter-spacing:.04em;}
-.pkg-card.featured .pkg-tagline{color:rgba(250,246,240,.5);}
-.pkg-price{margin-bottom:28px;}
-.pkg-price .amount{
-  font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;
-  color:var(--rose);line-height:1;
-}
-.pkg-card.featured .pkg-price .amount{color:var(--rose-l);}
-.pkg-price .currency{font-size:22px;vertical-align:top;margin-top:8px;display:inline-block;}
-.pkg-price .note{font-size:11px;color:var(--ink-mute);margin-top:4px;letter-spacing:.04em;}
-.pkg-card.featured .pkg-price .note{color:rgba(250,246,240,.4);}
-.pkg-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
-.pkg-features li{
-  display:flex;align-items:flex-start;gap:10px;
-  font-size:13px;color:var(--ink-soft);line-height:1.5;font-weight:500;
-}
-.pkg-card.featured .pkg-features li{color:rgba(250,246,240,.7);}
-.pkg-features li::before{
-  content:"✓";color:var(--rose);font-size:12px;
-  font-weight:700;margin-top:1px;flex-shrink:0;
-}
-.pkg-card.featured .pkg-features li::before{color:var(--rose-l);}
-.pkg-cta{
-  display:block;text-align:center;
-  background:var(--rose);color:#fff;
-  padding:13px 24px;border-radius:50px;
-  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  text-decoration:none;transition:all .2s;
-}
-.pkg-cta:hover{background:var(--rose-d);transform:translateY(-1px);}
-.pkg-cta.outline{
-  background:transparent;color:var(--rose);
-  border:1px solid rgba(184,104,88,.3);
-}
-.pkg-cta.outline:hover{background:rgba(184,104,88,.08);}
+/* REVIEWS */
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px;}
+.rev{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:22px;}
+.rev-stars{color:var(--gold);font-size:12px;letter-spacing:1.5px;margin-bottom:10px;}
+.rev-text{font-size:13px;font-style:italic;color:var(--ink-soft);line-height:1.7;font-weight:500;margin-bottom:14px;}
+.rev-name{font-size:12px;font-weight:700;color:var(--ink);}
+.rev-occ{font-size:11px;color:var(--ink-mute);}
 
-/* ══ FRAME OPTIONS ══ */
-.frames{background:var(--cream2);}
-.frames-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;margin-top:48px;
-}
-.frame-card{
-  background:var(--cream);border:1px solid var(--line);
-  border-radius:18px;overflow:hidden;
-  transition:all .3s cubic-bezier(.2,.7,.2,1);
-}
-.frame-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
-.frame-preview{
-  height:160px;display:flex;align-items:center;justify-content:center;
-  position:relative;
-}
-.frame-preview-inner{
-  width:100px;height:120px;border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;
-}
-.frame-preview-mat{
-  width:76px;height:96px;background:var(--cream2);
-  border-radius:2px;display:flex;align-items:center;justify-content:center;
-  font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);
-}
-.frame-card-info{padding:16px 20px;}
-.frame-card-info h4{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;margin-bottom:3px;}
-.frame-card-info p{font-size:11px;color:var(--ink-mute);letter-spacing:.04em;}
+/* FAQ */
+.faq-list{margin-top:32px;display:flex;flex-direction:column;gap:7px;max-width:680px;}
+.faq-item{background:var(--cream2);border:1px solid var(--line);border-radius:11px;overflow:hidden;}
+.faq-q{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);gap:14px;user-select:none;}
+.faq-q:hover{background:rgba(184,96,80,.04);}
+.faq-plus{color:var(--rose);font-size:20px;font-weight:300;flex-shrink:0;transition:transform .25s;line-height:1;}
+.faq-item.open .faq-plus{transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.2,.7,.2,1),padding .3s;padding:0 18px;font-size:13px;color:var(--ink-soft);line-height:1.7;font-weight:500;}
+.faq-item.open .faq-a{max-height:140px;padding:0 18px 16px;}
 
-/* ══ TESTIMONIALS ══ */
-.testimonials{background:var(--cream);overflow:hidden;}
-.testi-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;margin-top:52px;
-}
-.testi-card{
-  background:var(--cream2);border:1px solid var(--line);
-  border-radius:20px;padding:28px;
-  position:relative;
-}
-.testi-card::before{
-  content:"\201C";
-  font-family:'Cormorant Garamond',serif;font-size:80px;
-  color:var(--rose-l);opacity:.4;
-  position:absolute;top:8px;left:20px;line-height:1;
-}
-.testi-stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:14px;}
-.testi-text{font-size:14px;line-height:1.75;color:var(--ink-soft);margin-bottom:20px;font-style:italic;font-weight:500;}
-.testi-author{display:flex;align-items:center;gap:12px;}
-.testi-avatar{
-  width:40px;height:40px;border-radius:50%;
-  background:linear-gradient(135deg,var(--rose-l),var(--rose));
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:16px;color:#fff;font-weight:400;
-}
-.testi-name{font-size:13px;font-weight:600;color:var(--ink);}
-.testi-occasion{font-size:11px;color:var(--ink-mute);letter-spacing:.04em;}
+/* CTA STRIP */
+.cta-strip{background:var(--rose);color:#fff;padding:clamp(44px,7vw,72px) clamp(24px,5vw,64px);text-align:center;}
+.cta-strip h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(30px,4.5vw,52px);line-height:1.1;margin-bottom:10px;}
+.cta-strip p{font-size:14px;opacity:.85;font-weight:500;margin-bottom:24px;}
+.btn-white{background:#fff;color:var(--rose);border-radius:50px;padding:13px 30px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .15s;}
+.btn-white:hover{background:var(--cream);transform:translateY(-1px);}
 
-/* ══ FAQ ══ */
-.faq{background:var(--cream2);}
-.faq-list{margin-top:48px;max-width:720px;display:flex;flex-direction:column;gap:12px;}
-.faq-item{
-  background:var(--cream);border:1px solid var(--line);
-  border-radius:14px;overflow:hidden;
-}
-.faq-q{
-  padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;font-size:14px;font-weight:600;color:var(--ink);
-  user-select:none;transition:background .15s;gap:16px;
-}
-.faq-q:hover{background:rgba(184,104,88,.04);}
-.faq-icon{
-  width:24px;height:24px;border-radius:50%;background:var(--cream2);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:16px;color:var(--rose);transition:transform .3s;
-}
-.faq-item.open .faq-icon{transform:rotate(45deg);}
-.faq-a{
-  max-height:0;overflow:hidden;
-  transition:max-height .4s cubic-bezier(.2,.7,.2,1),padding .3s;
-  padding:0 24px;font-size:13px;color:var(--ink-soft);line-height:1.75;
-}
-.faq-item.open .faq-a{max-height:200px;padding:0 24px 20px;}
+/* FOOTER */
+footer{background:#12100c;color:rgba(250,247,242,.45);padding:44px clamp(24px,5vw,64px) 22px;}
+.foot-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:44px;margin-bottom:32px;max-width:1080px;margin-left:auto;margin-right:auto;}
+.foot-logo{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;color:#e8a898;display:block;margin-bottom:8px;}
+.foot-desc{font-size:12px;line-height:1.7;color:rgba(250,247,242,.3);max-width:26ch;}
+.foot-col h5{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(250,247,242,.22);margin-bottom:12px;}
+.foot-col a{display:block;font-size:12px;color:rgba(250,247,242,.4);text-decoration:none;margin-bottom:8px;transition:color .15s;font-weight:500;}
+.foot-col a:hover{color:#e8a898;}
+.foot-bottom{border-top:1px solid rgba(250,247,242,.07);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;max-width:1080px;margin:0 auto;}
+.foot-bottom p{font-size:11px;}
+.foot-links{display:flex;gap:14px;}
+.foot-links a{font-size:11px;color:rgba(250,247,242,.28);text-decoration:none;transition:color .15s;}
+.foot-links a:hover{color:#e8a898;}
 
-/* ══ CTA BANNER ══ */
-.cta-banner{
-  background:var(--ink);color:var(--cream);
-  text-align:center;padding:clamp(60px,10vw,100px) clamp(20px,5vw,60px);
-  position:relative;overflow:hidden;
-}
-.cta-banner::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(ellipse 700px 500px at 50% 50%,rgba(184,104,88,.2) 0%,transparent 65%);
-}
-.cta-banner>*{position:relative;z-index:2;}
-.cta-banner h2{
-  font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;
-  font-size:clamp(36px,6vw,64px);line-height:1.1;
-  margin-bottom:20px;
-}
-.cta-banner h2 em{color:var(--rose-l);}
-.cta-banner p{font-size:15px;color:rgba(250,246,240,.6);max-width:44ch;margin:0 auto 36px;line-height:1.7;}
-.cta-banner .btn-primary{margin:0 auto;}
-
-/* ══ FOOTER ══ */
-footer{
-  background:#110e0a;color:rgba(250,246,240,.5);
-  padding:clamp(40px,8vw,64px) clamp(20px,5vw,60px);
-}
-.footer-inner{
-  display:grid;grid-template-columns:2fr 1fr 1fr;
-  gap:clamp(32px,5vw,64px);margin-bottom:48px;
-}
-.footer-brand .logo{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:24px;color:var(--rose-l);display:block;margin-bottom:12px;
-}
-.footer-brand p{font-size:12px;line-height:1.7;max-width:32ch;color:rgba(250,246,240,.4);}
-.footer-col h5{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(250,246,240,.3);margin-bottom:16px;}
-.footer-col a{display:block;font-size:13px;color:rgba(250,246,240,.5);text-decoration:none;margin-bottom:10px;transition:color .2s;}
-.footer-col a:hover{color:var(--rose-l);}
-.footer-bottom{
-  border-top:1px solid rgba(250,246,240,.08);
-  padding-top:24px;display:flex;align-items:center;
-  justify-content:space-between;flex-wrap:wrap;gap:12px;
-}
-.footer-bottom p{font-size:11px;letter-spacing:.06em;}
-.footer-bottom-links{display:flex;gap:20px;}
-.footer-bottom-links a{font-size:11px;color:rgba(250,246,240,.3);text-decoration:none;transition:color .2s;}
-.footer-bottom-links a:hover{color:var(--rose-l);}
-
-/* ══ ANIMATIONS ══ */
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@keyframes fadeScale{from{opacity:0;transform:scale(.95) translateY(20px)}to{opacity:1;transform:none}}
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);}
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);}
 .reveal.in{opacity:1;transform:none;}
-.reveal.d1{transition-delay:.1s;}.reveal.d2{transition-delay:.2s;}.reveal.d3{transition-delay:.3s;}.reveal.d4{transition-delay:.4s;}
-.reveal-scale{opacity:0;transform:scale(.96);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);}
-.reveal-scale.in{opacity:1;transform:none;}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
 
-/* ══ PRODUCT CONFIGURATOR ══ */
-.configurator{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,64px);align-items:start;}
-.config-preview-sticky{position:sticky;top:90px;}
-.config-frame-wrap{
-  background:var(--cream2);border-radius:20px;padding:24px;
-  display:flex;align-items:center;justify-content:center;
-  min-height:320px;margin-bottom:14px;
-  border:1px solid var(--line);
+/* RESPONSIVE */
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;min-height:auto;}
+  .hero-right{height:320px;}
+  .steps{grid-template-columns:1fr 1fr;}
+  .occ-grid{grid-template-columns:repeat(4,1fr);}
+  .prod-grid{grid-template-columns:1fr;}
+  .prod-sticky{position:static;}
+  .rev-grid{grid-template-columns:1fr 1fr;}
+  .foot-top{grid-template-columns:1fr 1fr;}
+  .nav-links{display:none;}
+  .hamburger{display:block;}
 }
-.config-frame{
-  border-radius:8px;padding:12px;
-  box-shadow:0 20px 48px -12px rgba(0,0,0,.4),0 4px 12px -4px rgba(0,0,0,.2);
-  transition:background .4s ease;
-  width:180px;
-}
-.config-mat{
-  background:var(--cream);border-radius:4px;
-  aspect-ratio:3/4;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;position:relative;overflow:hidden;
-}
-.config-photo-area{
-  width:100%;flex:1;
-  background:linear-gradient(135deg,#d8c8b4,#c0a890);
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
-  color:rgba(60,40,20,.35);
-}
-.config-qr-corner{
-  position:absolute;bottom:6px;right:6px;
-  background:rgba(0,0,0,.7);border-radius:4px;
-  padding:4px;display:flex;
-}
-.config-preview-label{text-align:center;font-size:12px;font-weight:600;color:var(--ink-soft);letter-spacing:.04em;}
-.config-badge{
-  text-align:center;margin-top:8px;
-  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--rose);font-weight:700;
-}
-.config-price-box{
-  background:var(--cream2);border-radius:12px;padding:16px 20px;
-  border:1px solid var(--line);
-}
-.config-step{margin-bottom:24px;}
-.config-step-label{
-  font-size:10px;letter-spacing:.25em;text-transform:uppercase;
-  color:var(--ink-mute);font-weight:700;margin-bottom:12px;
-}
-.config-opts-row{display:flex;gap:10px;flex-wrap:wrap;}
-.config-opt{
-  flex:1;min-width:100px;
-  background:var(--cream2);border:2px solid var(--line);
-  border-radius:12px;padding:14px 10px;text-align:center;
-  cursor:pointer;transition:all .2s;
-}
-.config-opt:hover{border-color:rgba(184,104,88,.4);}
-.config-opt.selected{border-color:var(--rose);background:rgba(184,104,88,.06);}
-.config-opt-icon{font-size:20px;margin-bottom:6px;}
-.config-opt-name{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;}
-.config-opt-price{font-size:13px;color:var(--rose);font-weight:700;}
-.config-color-row{display:flex;gap:12px;flex-wrap:wrap;}
-.config-color{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  cursor:pointer;padding:8px 12px;border-radius:10px;
-  border:2px solid transparent;transition:all .2s;
-}
-.config-color:hover{border-color:rgba(184,104,88,.3);}
-.config-color.selected{border-color:var(--rose);background:rgba(184,104,88,.06);}
-.config-color-dot{width:28px;height:28px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.config-color span{font-size:10px;color:var(--ink-soft);font-weight:600;letter-spacing:.04em;white-space:nowrap;}
-.include-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink-soft);font-weight:500;line-height:1.5;}
-.include-check{color:var(--rose);font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px;}
-.config-cta{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  background:var(--rose);color:#fff;border-radius:50px;
-  padding:16px 28px;font-size:14px;font-weight:700;
-  letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
-  transition:all .2s;box-shadow:0 8px 28px -8px rgba(184,104,88,.5);
-  width:100%;
-}
-.config-cta:hover{background:var(--rose-d);transform:translateY(-2px);box-shadow:0 14px 36px -8px rgba(184,104,88,.55);}
-.delivery-box{margin-top:20px;display:flex;flex-direction:column;gap:12px;padding:20px;background:var(--cream2);border-radius:14px;border:1px solid var(--line);}
-.delivery-item{display:flex;align-items:flex-start;gap:12px;}
-.delivery-item svg{stroke:var(--rose);flex-shrink:0;margin-top:2px;}
-.delivery-item div{display:flex;flex-direction:column;gap:2px;}
-.delivery-item strong{font-size:13px;font-weight:700;color:var(--ink);}
-.delivery-item span{font-size:11px;color:var(--ink-mute);}
-@media(max-width:768px){
-  .configurator{grid-template-columns:1fr;}
-  .config-preview-sticky{position:static;}
-  .config-frame-wrap{min-height:240px;}
-}
-/* ══ RESPONSIVE ══ */
-@media(max-width:768px){
-  .hero{grid-template-columns:1fr;padding-top:100px;}
-  .hero-visual{display:none;}
-  .experience-inner{grid-template-columns:1fr;}
-  .exp-visual{display:none;}
-  .footer-inner{grid-template-columns:1fr;}
-  .nav-links{
-    display:none;
-    position:fixed;top:57px;left:0;right:0;
-    background:rgba(250,246,240,.98);
-    backdrop-filter:blur(16px);
-    flex-direction:column;
-    padding:20px 24px 28px;
-    border-bottom:1px solid var(--line);
-    gap:4px;z-index:499;
-    box-shadow:0 8px 32px rgba(30,20,10,.1);
-  }
-  .nav-links.open{display:flex;}
-  .nav-links a{
-    font-size:14px;padding:12px 0;
-    border-bottom:1px solid var(--line);
-    letter-spacing:.06em;
-  }
-  .nav-links a:last-child{border:none;padding-top:16px;}
-  .nav-links .nav-cta{
-    display:block;text-align:center;
-    margin-top:4px;padding:14px 24px;
-    font-size:12px;
-  }
-  .nav-mobile-toggle{display:block;}
-  .cur,.cur-ring{display:none;}
+@media(max-width:540px){
+  .occ-grid{grid-template-columns:repeat(2,1fr);}
+  .steps{grid-template-columns:1fr;}
+  .rev-grid{grid-template-columns:1fr;}
+  .foot-top{grid-template-columns:1fr;}
+  .trust-bar{gap:12px;}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
 
-<div class="cur" id="cur"></div>
-<div class="cur-ring" id="curRing"></div>
-
 <!-- NAV -->
-<nav id="nav">
-  <a href="/" class="nav-logo">MemoreLive <span>®</span></a>
+<nav>
+  <a href="/" class="nav-logo">MemoreLive</a>
   <div class="nav-links">
-    <a href="#how-it-works">How it works</a>
-    <a href="#packages">Packages</a>
+    <a href="#how-it-works">How It Works</a>
     <a href="#occasions">Occasions</a>
+    <a href="#product">Order</a>
     <a href="#faq">FAQ</a>
-    <a href="/order" class="nav-cta">Create Yours 🌹</a>
   </div>
-  <button class="nav-mobile-toggle" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">☰</button>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="#product" class="nav-cta">Order Now</a>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
 </nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="#how-it-works" onclick="closeMenu()">How It Works</a>
+  <a href="#occasions" onclick="closeMenu()">Occasions</a>
+  <a href="#product" onclick="closeMenu()">Order</a>
+  <a href="#faq" onclick="closeMenu()">FAQ</a>
+  <a href="#product" onclick="closeMenu()">Order Now →</a>
+</div>
 
-<main>
-
-<!-- ══ HERO ══ -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <canvas id="particles" style="position:absolute;inset:0;pointer-events:none;z-index:0;"></canvas>
-
-  <div class="hero-content">
-    <div class="hero-eyebrow">The gift that lives forever</div>
-    <h1 class="hero-title">
-      Scan the frame.<br>
-      <strong>Relive the <em>moment.</em></strong>
-    </h1>
-    <p class="hero-sub">A beautiful framed photo with a hidden QR code that unlocks your photos, videos and personal messages — forever. The most unique personalised gift on the planet.</p>
-    <div class="hero-actions">
-      <a href="/order" class="btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
-        Create Your LiveFrame
+  <div class="hero-left">
+    <div class="hero-tag">The gift that lives forever</div>
+    <h1 class="hero-h1">Scan the frame.<br><strong>Relive the moment.</strong></h1>
+    <p class="hero-p">A framed photo with a hidden QR code that unlocks your photos, videos and personal messages — forever.</p>
+    <div class="hero-btns">
+      <a href="#product" class="btn-rose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
+        Create Yours
       </a>
-      <a href="#how-it-works" class="btn-secondary">See how it works</a>
+      <a href="#how-it-works" class="btn-outline">See How It Works</a>
     </div>
     <div class="hero-trust">
-      <div class="hero-trust-stars">★★★★★</div>
-      <div class="hero-trust-text">Free shipping · Delivered in 24hrs · Loved by thousands</div>
+      <span class="stars">★★★★★</span>
+      <span>200+ happy customers · Free worldwide shipping</span>
     </div>
   </div>
-
-  <div class="hero-visual">
-    <div class="hero-frame-mockup">
-      <div class="floating-badge">✨ Scan & Relive</div>
-      <div class="frame-outer">
-        <div class="frame-inner">
-          <div class="frame-photo">
-            <span class="frame-photo-placeholder">Your Photo Here</span>
-          </div>
-          <div class="frame-info">
-            <div class="frame-info-title">Happy Anniversary</div>
-            <div class="frame-info-sub">June 15, 2024 · Forever yours</div>
-          </div>
-        </div>
-      </div>
-      <div class="qr-badge">
-        <div class="qr-box">
-          <svg viewBox="0 0 24 24" fill="white"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM19 14h2v2h-2zM14 19h5v2h-5zM19 19h2v2h-2z"/></svg>
-        </div>
-        <div class="qr-text">
-          <strong>Scan to relive</strong>
-          <span>memorelive.com</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ HOW IT WORKS ══ -->
-<section class="hiw" id="how-it-works">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="text-align:center;max-width:560px;margin:0 auto 0;">
-      <div class="section-tag reveal">Simple process</div>
-      <h2 class="section-title reveal d1">How <em>MemoreLive</em> works</h2>
-      <p class="section-sub reveal d2" style="margin:0 auto;">From order to keepsake in 24 hours. We handle everything.</p>
-    </div>
-    <div class="hiw-grid">
-      <div class="hiw-step reveal d1">
-        <div class="hiw-num">01</div>
-        <div class="hiw-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <h3>Place your order</h3>
-        <p>Choose your package, frame size and colour. Upload your photos and videos directly — all before you pay.</p>
-        <div class="hiw-connector"></div>
-      </div>
-      <div class="hiw-step reveal d2">
-        <div class="hiw-num">02</div>
-        <div class="hiw-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        </div>
-        <h3>We craft your page</h3>
-        <p>Our team handcrafts a beautiful personalised memory page with your photos, videos, music and personal letter.</p>
-        <div class="hiw-connector"></div>
-      </div>
-      <div class="hiw-step reveal d3">
-        <div class="hiw-num">03</div>
-        <div class="hiw-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        </div>
-        <h3>Frame + QR delivered</h3>
-        <p>Your framed photo with a hidden QR code ships directly to you or your recipient. Free worldwide shipping.</p>
-        <div class="hiw-connector"></div>
-      </div>
-      <div class="hiw-step reveal d4">
-        <div class="hiw-num">04</div>
-        <div class="hiw-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
-        </div>
-        <h3>Scan & relive forever</h3>
-        <p>Scan the QR code on the frame anytime. Watch their memories come alive — photos, videos, music and love letters.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ EXPERIENCE ══ -->
-<section class="experience">
-  <div class="experience-inner" style="max-width:1100px;margin:0 auto;">
-    <div class="exp-content">
-      <div class="section-tag reveal">The experience</div>
-      <h2 class="section-title reveal d1">More than a frame.<br>A <em>living memory.</em></h2>
-      <p class="section-sub reveal d2">When they scan the QR code a beautiful page opens — music plays softly, photos reveal one by one, and a personal letter waits at the end. Every time they scan it feels like the first time.</p>
-      <div class="exp-features">
-        <div class="exp-feat reveal d1">
-          <div class="exp-feat-icon"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div>
-            <h4>Photos & Videos</h4>
-            <p>All your favourite moments in one beautiful place — organised just how you want them.</p>
-          </div>
-        </div>
-        <div class="exp-feat reveal d2">
-          <div class="exp-feat-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
-          <div>
-            <h4>Background Music</h4>
-            <p>A soft melody plays as they explore the page — creating a truly cinematic memory experience.</p>
-          </div>
-        </div>
-        <div class="exp-feat reveal d3">
-          <div class="exp-feat-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-          <div>
-            <h4>Personal Letter</h4>
-            <p>A heartfelt letter written just for them — waiting at the end of the page like a love note.</p>
-          </div>
-        </div>
-        <div class="exp-feat reveal d4">
-          <div class="exp-feat-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div>
-            <h4>Hosted Forever</h4>
-            <p>Their memory page lives online permanently — accessible anytime, from anywhere in the world.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="exp-visual reveal-scale">
-      <div style="position:relative;width:260px;margin:0 auto;">
-        <div class="phone-mockup">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-screen-hero">Your Photo</div>
-            <div class="phone-screen-content">
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <div class="float-tag">✨ Scan &amp; Relive</div>
+      <div class="frame-mockup">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="frame-photo">Your Photo</div>
+            <div class="frame-caption">
               <h3>Happy Anniversary</h3>
-              <p>For our dearest Sarah · June 15</p>
+              <p>For our dearest Sarah</p>
             </div>
-            <div class="phone-screen-scroll">scroll</div>
           </div>
         </div>
-        <div class="scan-prompt">🌹 Memories unlocked</div>
+        <div class="qr-float">
+          <div class="qr-box"><svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM19 14h2v2h-2zM14 19h5v2h-5zM19 19h2v2h-2z"/></svg></div>
+          <div class="qr-text"><strong>Scan to relive</strong><span>memorelive.com</span></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ OCCASIONS ══ -->
-<section class="occasions" id="occasions">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="text-align:center;max-width:560px;margin:0 auto;">
-      <div class="section-tag reveal">Perfect for every moment</div>
-      <h2 class="section-title reveal d1">Every occasion <em>deserves</em> a living memory</h2>
-    </div>
-    <div class="occasions-grid">
-      <div class="occ-card reveal d1"><span class="occ-emoji">💍</span><div class="occ-name">Weddings</div><div class="occ-desc">The most unique wedding gift</div></div>
-      <div class="occ-card reveal d2"><span class="occ-emoji">🌹</span><div class="occ-name">Anniversaries</div><div class="occ-desc">Celebrate years of love</div></div>
-      <div class="occ-card reveal d1"><span class="occ-emoji">💕</span><div class="occ-name">Couples</div><div class="occ-desc">Your love story, captured</div></div>
-      <div class="occ-card reveal d2"><span class="occ-emoji">🎂</span><div class="occ-name">Birthdays</div><div class="occ-desc">Milestone moments forever</div></div>
-      <div class="occ-card reveal d3"><span class="occ-emoji">🌸</span><div class="occ-name">Mother's Day</div><div class="occ-desc">For the woman who is everything</div></div>
-      <div class="occ-card reveal d1"><span class="occ-emoji">🎩</span><div class="occ-name">Father's Day</div><div class="occ-desc">For the strongest man you know</div></div>
-      <div class="occ-card reveal d2"><span class="occ-emoji">🎓</span><div class="occ-name">Graduation</div><div class="occ-desc">Celebrate their achievement</div></div>
-      <div class="occ-card reveal d3"><span class="occ-emoji">✨</span><div class="occ-name">Any Occasion</div><div class="occ-desc">If there's love, there's a reason</div></div>
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item">Free Worldwide Shipping</div>
+  <div class="trust-item">Page Ready in 24 Hours</div>
+  <div class="trust-item">Hosted Forever</div>
+  <div class="trust-item">200+ Five-Star Reviews</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how-it-works">
+  <div class="sec-inner">
+    <div class="sec-tag reveal">How it works</div>
+    <h2 class="sec-h reveal d1">Simple. Personal. <em>Unforgettable.</em></h2>
+    <div class="steps">
+      <div class="step reveal d1">
+        <div class="step-n">01</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Place your order</h3>
+        <p>Choose your package and upload your photos and videos.</p>
+      </div>
+      <div class="step reveal d2">
+        <div class="step-n">02</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <h3>We craft your page</h3>
+        <p>We handcraft your memory page with photos, videos, music and a letter.</p>
+      </div>
+      <div class="step reveal d3">
+        <div class="step-n">03</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <h3>Frame delivered</h3>
+        <p>Your framed photo with hidden QR ships free worldwide in 6–8 days.</p>
+      </div>
+      <div class="step reveal d4">
+        <div class="step-n">04</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg></div>
+        <h3>Scan &amp; relive forever</h3>
+        <p>Scan anytime. Photos, videos, music and a personal letter come alive.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ══ PRODUCT CONFIGURATOR (Vistaprint style) ══ -->
-<section id="packages" style="background:var(--cream);padding:clamp(60px,10vw,100px) clamp(20px,5vw,60px);">
-  <div style="max-width:1100px;margin:0 auto;">
-
-    <!-- Section header -->
-    <div style="text-align:center;max-width:560px;margin:0 auto 56px;">
-      <div class="section-tag reveal">Build your order</div>
-      <h2 class="section-title reveal d1">Create your <em>MemoreLive</em></h2>
-      <p class="section-sub reveal d2" style="margin:0 auto;">Choose your options below. All packages include a handcrafted memory page, music, personal letter and free shipping.</p>
+<!-- OCCASIONS -->
+<section class="sec" id="occasions" style="background:var(--cream2);">
+  <div class="sec-inner">
+    <div class="sec-tag reveal">Perfect for</div>
+    <h2 class="sec-h reveal d1">Every occasion worth <em>remembering.</em></h2>
+    <div class="occ-grid">
+      <div class="occ reveal d1"><span class="occ-emoji">💍</span><div class="occ-name">Weddings</div></div>
+      <div class="occ reveal d2"><span class="occ-emoji">🌹</span><div class="occ-name">Anniversaries</div></div>
+      <div class="occ reveal d3"><span class="occ-emoji">💕</span><div class="occ-name">Couples</div></div>
+      <div class="occ reveal d4"><span class="occ-emoji">🎂</span><div class="occ-name">Birthdays</div></div>
+      <div class="occ reveal d1"><span class="occ-emoji">🌸</span><div class="occ-name">Mother's Day</div></div>
+      <div class="occ reveal d2"><span class="occ-emoji">🎩</span><div class="occ-name">Father's Day</div></div>
+      <div class="occ reveal d3"><span class="occ-emoji">🎓</span><div class="occ-name">Graduation</div></div>
+      <div class="occ reveal d4"><span class="occ-emoji">✨</span><div class="occ-name">Any Occasion</div></div>
     </div>
+  </div>
+</section>
 
-    <!-- Product configurator -->
-    <div class="configurator reveal">
-
-      <!-- LEFT: Product preview -->
-      <div class="config-preview">
-        <div class="config-preview-sticky">
-          <div class="config-frame-wrap" id="frameWrap">
-            <div class="config-frame" id="configFrame" style="background:#1a1208;">
-              <div class="config-mat">
-                <div class="config-photo-area">
-                  <span>Your Photo</span>
-                </div>
-                <div class="config-qr-corner">
-                  <svg viewBox="0 0 24 24" fill="white" width="14" height="14"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM19 14h2v2h-2zM14 19h5v2h-5zM19 19h2v2h-2z"/></svg>
-                </div>
-              </div>
+<!-- PRODUCT -->
+<section class="sec" id="product">
+  <div class="sec-inner">
+    <div class="prod-grid">
+      <!-- Preview -->
+      <div class="prod-sticky">
+        <div class="prod-preview reveal">
+          <div class="conf-frame" id="confFrame" style="background:#1a1208;">
+            <div class="conf-mat">
+              <div class="conf-photo">Your Photo</div>
+              <div class="conf-caption"><h4>Happy Anniversary</h4><p>For our dearest Sarah</p></div>
+              <div class="conf-qr-badge"><svg viewBox="0 0 24 24" fill="white" width="12" height="12"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM19 14h2v2h-2zM14 19h5v2h-5zM19 19h2v2h-2z"/></svg></div>
             </div>
           </div>
-          <div class="config-preview-label" id="previewLabel">12×16" · Classic Black</div>
-          <div class="config-badge">✨ QR code hidden inside</div>
         </div>
+        <div class="prod-preview-label" id="previewLabel">12×16" · Classic Black</div>
       </div>
 
-      <!-- RIGHT: Options -->
-      <div class="config-options">
+      <!-- Options -->
+      <div class="reveal d1">
+        <div class="sec-tag" style="margin-bottom:8px;">Build your order</div>
+        <h2 class="prod-name">Personalised Memory Frame <em>+ Living Page</em></h2>
+        <div class="prod-rating">
+          <span class="stars">★★★★★</span>
+          <span>4.9 · 200+ reviews</span>
+        </div>
+        <div class="prod-price" id="prodPrice">$99</div>
+        <div class="prod-price-note">One-time · Free shipping · No subscription</div>
+        <div class="div"></div>
 
-        <!-- Product name + rating -->
-        <div style="margin-bottom:24px;">
-          <div style="font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--rose);margin-bottom:8px;">MemoreLive Frame</div>
-          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,38px);font-weight:400;line-height:1.1;margin-bottom:10px;">Personalised Memory Frame <em style="color:var(--rose);font-style:italic;">+ Living Page</em></h2>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-            <span style="color:var(--gold);font-size:14px;letter-spacing:2px;">★★★★★</span>
-            <span style="font-size:12px;color:var(--ink-soft);font-weight:500;">4.9 · 200+ happy customers</span>
-          </div>
-          <div style="font-size:12px;color:var(--sage);font-weight:600;letter-spacing:.04em;">✓ Free worldwide shipping · Delivered in 6-8 business days</div>
+        <div class="opt-lbl">1 · Product</div>
+        <div class="type-row">
+          <div class="type-pill sel" onclick="setType(this,'sm','$99','12×16&quot; · ')"><span class="type-pill-name">12×16" Framed</span><span class="type-pill-price">$99</span></div>
+          <div class="type-pill" onclick="setType(this,'lg','$139','16×20&quot; · ')"><span class="type-pill-name">16×20" Framed</span><span class="type-pill-price">$139</span></div>
+          <div class="type-pill" onclick="setType(this,'d','$49','Digital · ')"><span class="type-pill-name">Digital Only</span><span class="type-pill-price">$49</span></div>
         </div>
 
-        <!-- Price display -->
-        <div class="config-price-box">
-          <div style="display:flex;align-items:baseline;gap:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--rose);line-height:1;" id="configPrice">$99</span>
-            <span style="font-size:13px;color:var(--ink-mute);font-weight:500;">USD · one-time</span>
-          </div>
-          <div style="font-size:11px;color:var(--ink-mute);margin-top:4px;letter-spacing:.04em;">No subscription. No hidden fees. Hosted forever.</div>
-        </div>
-
-        <div style="height:1px;background:var(--line);margin:20px 0;"></div>
-
-        <!-- Step 1: Product type -->
-        <div class="config-step">
-          <div class="config-step-label">1 · Product type</div>
-          <div class="config-opts-row">
-            <div class="config-opt selected" data-type="framed-sm" onclick="selectType(this,'framed-sm','$99','12×16" · ')">
-              <div class="config-opt-icon">🖼</div>
-              <div class="config-opt-name">12×16" Framed</div>
-              <div class="config-opt-price">$99</div>
-            </div>
-            <div class="config-opt" data-type="framed-lg" onclick="selectType(this,'framed-lg','$139','16×20" · ')">
-              <div class="config-opt-icon">✨</div>
-              <div class="config-opt-name">16×20" Framed</div>
-              <div class="config-opt-price">$139</div>
-            </div>
-            <div class="config-opt" data-type="digital" onclick="selectType(this,'digital','$49','Digital · ')">
-              <div class="config-opt-icon">📱</div>
-              <div class="config-opt-name">Digital Only</div>
-              <div class="config-opt-price">$49</div>
-            </div>
+        <div id="colorOpt">
+          <div class="opt-lbl">2 · Frame colour</div>
+          <div class="color-row">
+            <div class="cswatch sel" onclick="setColor(this,'#1a1208','Classic Black')"><div class="cdot" style="background:#1a1208;"></div><span>Black</span></div>
+            <div class="cswatch" onclick="setColor(this,'#f0ece8','Clean White')"><div class="cdot" style="background:#f0ece8;border:1.5px solid #d0c8c0;"></div><span>White</span></div>
+            <div class="cswatch" onclick="setColor(this,'#8B6914','Natural Wood')"><div class="cdot" style="background:#8B6914;"></div><span>Natural</span></div>
+            <div class="cswatch" onclick="setColor(this,'#3a2c20','Dark Wood')"><div class="cdot" style="background:#3a2c20;"></div><span>Dark Wood</span></div>
           </div>
         </div>
 
-        <!-- Step 2: Frame colour (hidden for digital) -->
-        <div class="config-step" id="frameColorStep">
-          <div class="config-step-label">2 · Frame colour</div>
-          <div class="config-color-row">
-            <div class="config-color selected" data-color="black" data-hex="#1a1208" data-label="Classic Black" onclick="selectColor(this)" title="Classic Black">
-              <div class="config-color-dot" style="background:#1a1208;"></div>
-              <span>Black</span>
-            </div>
-            <div class="config-color" data-color="white" data-hex="#f0ece8" data-label="Clean White" onclick="selectColor(this)" title="Clean White">
-              <div class="config-color-dot" style="background:#f0ece8;border:1.5px solid #d0c8c0;"></div>
-              <span>White</span>
-            </div>
-            <div class="config-color" data-color="natural" data-hex="#8B6914" data-label="Natural Wood" onclick="selectColor(this)" title="Natural Wood">
-              <div class="config-color-dot" style="background:#8B6914;"></div>
-              <span>Natural Wood</span>
-            </div>
-            <div class="config-color" data-color="dark" data-hex="#3a2c20" data-label="Dark Wood" onclick="selectColor(this)" title="Dark Wood">
-              <div class="config-color-dot" style="background:#3a2c20;"></div>
-              <span>Dark Wood</span>
-            </div>
-          </div>
+        <div class="div"></div>
+
+        <div class="opt-lbl">What's included</div>
+        <div class="includes" id="incList">
+          <div class="inc" id="incFrame">Premium framed print (12×16") — matte finish, Ayous wood frame</div>
+          <div class="inc">Handcrafted memory page — photos, videos, music &amp; letter</div>
+          <div class="inc">QR code embedded in frame</div>
+          <div class="inc">Unlimited photos &amp; YouTube video links</div>
+          <div class="inc">Background music of your choice</div>
+          <div class="inc">Memory page hosted forever</div>
+          <div class="inc fi">Free worldwide shipping (6–8 business days to USA)</div>
+          <div class="inc fi">Gift-ready packaging</div>
         </div>
 
-        <div style="height:1px;background:var(--line);margin:8px 0 20px;"></div>
-
-        <!-- What's included -->
-        <div style="margin-bottom:24px;">
-          <div class="config-step-label" style="margin-bottom:12px;">What's included</div>
-          <div id="includesList" style="display:flex;flex-direction:column;gap:8px;">
-            <div class="include-item"><span class="include-check">✓</span><span>Premium framed print (12×16") — matte finish, Ayous wood frame</span></div>
-            <div class="include-item"><span class="include-check">✓</span><span>Handcrafted memory page — photos, videos, music & letter</span></div>
-            <div class="include-item"><span class="include-check">✓</span><span>QR code embedded in the frame</span></div>
-            <div class="include-item"><span class="include-check">✓</span><span>Unlimited photos & video links</span></div>
-            <div class="include-item"><span class="include-check">✓</span><span>Background music of your choice</span></div>
-            <div class="include-item"><span class="include-check">✓</span><span>Personal letter written by you</span></div>
-            <div class="include-item"><span class="include-check">✓</span><span>Memory page hosted forever</span></div>
-            <div class="include-item framed-only"><span class="include-check">✓</span><span>Free worldwide shipping (6-8 business days to USA)</span></div>
-            <div class="include-item framed-only"><span class="include-check">✓</span><span>Gift-ready packaging</span></div>
-          </div>
-        </div>
-
-        <!-- CTA -->
-        <a href="/order" class="config-cta" id="configCta">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
+        <a href="/order" class="prod-cta" id="prodCta">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
           Order Now — $99
         </a>
-        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--ink-mute);letter-spacing:.04em;">
-          🔒 Secure checkout · 💳 PayPal & Cards accepted
-        </div>
+        <div class="prod-secure">🔒 Secure checkout · PayPal &amp; Cards accepted</div>
 
-        <!-- Delivery info -->
-        <div class="delivery-box">
-          <div class="delivery-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            <div>
-              <strong>Free Shipping</strong>
-              <span>USA · UK · Canada · Australia · Europe</span>
-            </div>
-          </div>
-          <div class="delivery-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <div>
-              <strong>Delivered in 6–8 days</strong>
-              <span>Page ready within 24hrs of file upload</span>
-            </div>
-          </div>
-          <div class="delivery-item">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <div>
-              <strong>100% Satisfaction</strong>
-              <span>We'll make it right if anything's not perfect</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ TESTIMONIALS ══ -->
-<section class="testimonials" id="reviews">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="text-align:center;max-width:560px;margin:0 auto;">
-      <div class="section-tag reveal">Real stories</div>
-      <h2 class="section-title reveal d1">They scanned the frame <em>and cried.</em></h2>
-    </div>
-    <div class="testi-grid">
-      <div class="testi-card reveal d1">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">"I gave this to my husband for our 10th anniversary. When he scanned the frame and heard our song start playing, he just stood there with tears in his eyes. Worth every penny."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">J</div>
-          <div><div class="testi-name">Jessica M.</div><div class="testi-occasion">10th Anniversary · New York</div></div>
-        </div>
-      </div>
-      <div class="testi-card reveal d2">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">"We got this as a wedding gift and honestly it's the only gift we still talk about. All our wedding photos and a video from our maid of honour — it never gets old."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">S</div>
-          <div><div class="testi-name">Sarah & Tom</div><div class="testi-occasion">Wedding Gift · London</div></div>
-        </div>
-      </div>
-      <div class="testi-card reveal d3">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">"Ordered this for my mum's birthday. She's not very tech-savvy but the moment she scanned it with her phone she was absolutely overwhelmed. The letter section made her cry."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">A</div>
-          <div><div class="testi-name">Amanda K.</div><div class="testi-occasion">Mother's Day · Sydney</div></div>
+        <div class="delivery">
+          <div class="del-row"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><div><strong>Free Shipping</strong><small>USA · UK · Canada · Australia · Europe</small></div></div>
+          <div class="del-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><strong>Page ready in 24hrs</strong><small>Frame delivered in 6–8 business days</small></div></div>
+          <div class="del-row"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><div><strong>100% Satisfaction</strong><small>We'll make it right if anything's not perfect</small></div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ FAQ ══ -->
-<section class="faq" id="faq">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div class="section-tag reveal">Common questions</div>
-    <h2 class="section-title reveal d1">Everything you <em>need to know</em></h2>
+<!-- REVIEWS -->
+<section class="sec" id="reviews" style="background:var(--cream2);">
+  <div class="sec-inner">
+    <div class="sec-tag reveal">Reviews</div>
+    <h2 class="sec-h reveal d1">They scanned the frame <em>and cried.</em></h2>
+    <div class="rev-grid">
+      <div class="rev reveal d1"><div class="rev-stars">★★★★★</div><p class="rev-text">"When my husband scanned the frame and heard our song playing, he stood there with tears in his eyes. Worth every penny."</p><div class="rev-name">Jessica M.</div><div class="rev-occ">10th Anniversary · New York</div></div>
+      <div class="rev reveal d2"><div class="rev-stars">★★★★★</div><p class="rev-text">"The only wedding gift we still talk about. Our wedding photos, a video from our maid of honour — it never gets old."</p><div class="rev-name">Sarah &amp; Tom</div><div class="rev-occ">Wedding Gift · London</div></div>
+      <div class="rev reveal d3"><div class="rev-stars">★★★★★</div><p class="rev-text">"My mum is not tech-savvy but when she scanned it she was absolutely overwhelmed. The letter section made her cry."</p><div class="rev-name">Amanda K.</div><div class="rev-occ">Mother's Day · Sydney</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="sec-inner">
+    <div class="sec-tag reveal">FAQ</div>
+    <h2 class="sec-h reveal d1">Common <em>questions.</em></h2>
     <div class="faq-list">
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span>How long does it take to receive my order?</span><div class="faq-icon">+</div></div>
-        <div class="faq-a">Your personalised memory page is handcrafted within 24 hours of receiving your files. For physical framed orders, the frame is printed and shipped within 3-5 business days, arriving in 6-8 business days in the USA. Digital orders are delivered instantly via email once your page is ready.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span>How does the QR code work?</span><div class="faq-icon">+</div></div>
-        <div class="faq-a">Simply open your phone camera, point it at the QR code on the frame, and tap the link that appears. Your memory page opens instantly in any browser — no app download needed. Works on iPhone, Android, and any smartphone.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span>How many photos and videos can I include?</span><div class="faq-icon">+</div></div>
-        <div class="faq-a">There is no limit to the number of photos. You can also include multiple YouTube video links — we recommend uploading your videos to YouTube as unlisted and sharing the link with us. The memory page is designed to beautifully display as many memories as you want.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span>Will the memory page be available forever?</span><div class="faq-icon">+</div></div>
-        <div class="faq-a">Yes. Your memory page is hosted on our servers indefinitely. We designed MemoreLive to last — the page and all its content will remain accessible for as long as MemoreLive exists.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span>Do you ship worldwide?</span><div class="faq-icon">+</div></div>
-        <div class="faq-a">Yes — we ship to the USA, UK, Canada, Australia, and most of Europe. Shipping is always free and takes 6-8 business days to the USA. Digital orders are available worldwide instantly.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)"><span>Can I update the memory page after delivery?</span><div class="faq-icon">+</div></div>
-        <div class="faq-a">Yes — contact us anytime and we can update your memory page with new photos, videos or a new letter. The QR code on your frame never changes, so updates appear automatically next time it's scanned.</div>
-      </div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)"><span>How long does delivery take?</span><span class="faq-plus">+</span></div><div class="faq-a">Your memory page is ready within 24hrs of receiving your files. Framed orders ship in 3–5 days and arrive in 6–8 business days in the USA.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)"><span>How does the QR code work?</span><span class="faq-plus">+</span></div><div class="faq-a">Open your phone camera, point it at the QR on the frame, tap the link. Your memory page opens instantly — no app needed. Works on any smartphone.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)"><span>How many photos and videos can I include?</span><span class="faq-plus">+</span></div><div class="faq-a">Unlimited photos. For videos, share your YouTube links (upload as unlisted) and we include them on your page.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)"><span>Will the page be available forever?</span><span class="faq-plus">+</span></div><div class="faq-a">Yes. Your memory page is hosted indefinitely. The QR code on your frame will always work.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)"><span>Do you ship worldwide?</span><span class="faq-plus">+</span></div><div class="faq-a">Yes — USA, UK, Canada, Australia and most of Europe. Always free. Digital orders are available worldwide instantly.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="faq(this)"><span>Can I update the page after delivery?</span><span class="faq-plus">+</span></div><div class="faq-a">Yes — contact us anytime to add photos, videos or update the letter. The QR code never changes so updates appear automatically.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ══ CTA BANNER ══ -->
-<section class="cta-banner">
-  <div class="section-tag reveal" style="justify-content:center;color:var(--rose-l);">
-    <span style="width:20px;height:1px;background:var(--rose-l);opacity:.5;display:block;"></span>
-    Start today
-    <span style="width:20px;height:1px;background:var(--rose-l);opacity:.5;display:block;"></span>
-  </div>
-  <h2 class="reveal d1">Give them a gift <em>they'll never forget.</em></h2>
-  <p class="reveal d2">Every scan is a journey back to the moments that matter most. Create your MemoreLive today.</p>
-  <a href="/order" class="btn-primary reveal d3" style="display:inline-flex;">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
+<!-- CTA -->
+<section class="cta-strip">
+  <h2>Give them a gift <em>they'll never forget.</em></h2>
+  <p>Every scan is a journey back to the moments that matter most.</p>
+  <a href="#product" class="btn-white">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
     Create Your MemoreLive
   </a>
-  <p class="reveal d4" style="margin-top:20px;font-size:12px;color:rgba(250,246,240,.35);letter-spacing:.08em;text-transform:uppercase;">Free worldwide shipping · Handcrafted in 24hrs · Hosted forever</p>
 </section>
-
-</main>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-inner" style="max-width:1100px;margin:0 auto;">
-    <div class="footer-brand">
-      <span class="logo">MemoreLive</span>
-      <p>Turn your favourite photos into a living keepsake. Scan the frame. Relive the moment. The most unique personalised gift on the planet.</p>
-    </div>
-    <div class="footer-col">
-      <h5>Product</h5>
-      <a href="#how-it-works">How it works</a>
-      <a href="#packages">Packages</a>
-      <a href="#occasions">Occasions</a>
-      <a href="#reviews">Reviews</a>
-    </div>
-    <div class="footer-col">
-      <h5>Support</h5>
-      <a href="#faq">FAQ</a>
-      <a href="mailto:hello@memorelive.com">Contact us</a>
-      <a href="/order">Place an order</a>
-    </div>
+  <div class="foot-top">
+    <div><span class="foot-logo">MemoreLive</span><p class="foot-desc">Scan the frame. Relive the moment. The most unique personalised gift on the planet.</p></div>
+    <div class="foot-col"><h5>Product</h5><a href="#how-it-works">How it works</a><a href="#product">Order</a><a href="#occasions">Occasions</a><a href="#reviews">Reviews</a></div>
+    <div class="foot-col"><h5>Help</h5><a href="#faq">FAQ</a><a href="mailto:hello@memorelive.com">Contact us</a><a href="/order">Place an order</a></div>
   </div>
-  <div class="footer-bottom" style="max-width:1100px;margin:0 auto;">
-    <p>© 2026 MemoreLive. All rights reserved.</p>
-    <div class="footer-bottom-links">
-      <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms of Service</a>
-      <a href="/refunds">Refund Policy</a>
-    </div>
-  </div>
+  <div class="foot-bottom"><p>© 2026 MemoreLive. All rights reserved.</p><div class="foot-links"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/refunds">Refunds</a></div></div>
 </footer>
 
 <script>
-// ── PRODUCT CONFIGURATOR ──
-const PRICES = {'framed-sm':'$99','framed-lg':'$139','digital':'$49'};
-const SIZE_LABELS = {'framed-sm':'12×16" · ','framed-lg':'16×20" · ','digital':'Digital · '};
-let currentType = 'framed-sm';
-let currentColorLabel = 'Classic Black';
+function toggleMenu(){const m=document.getElementById('mobMenu');const h=document.getElementById('hamburger');const o=m.classList.contains('open');m.classList.toggle('open',!o);h.textContent=o?'☰':'✕';}
+function closeMenu(){document.getElementById('mobMenu').classList.remove('open');document.getElementById('hamburger').textContent='☰';}
 
-function selectType(el, type, price, sizeLabel){
-  document.querySelectorAll('.config-opt').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  currentType = type;
-  // Update price
-  document.getElementById('configPrice').textContent = price;
-  document.getElementById('configCta').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg> Order Now — ${price}`;
-  // Show/hide frame color step
-  const frameStep = document.getElementById('frameColorStep');
-  frameStep.style.display = type === 'digital' ? 'none' : 'block';
-  // Show/hide framed-only includes
-  document.querySelectorAll('.framed-only').forEach(el=>{
-    el.style.display = type === 'digital' ? 'none' : 'flex';
-  });
-  // Update includes text for digital
-  if(type === 'digital'){
-    document.getElementById('includesList').querySelector('.include-item span').textContent = 'Printable QR card (print at home)';
-  } else {
-    document.getElementById('includesList').querySelector('.include-item span').textContent = `Premium framed print (${type==='framed-sm'?'12×16"':'16×20"'}) — matte finish, Ayous wood frame`;
-  }
-  // Update preview label
-  updatePreviewLabel(sizeLabel);
-  // Hide frame wrap for digital
-  document.getElementById('frameWrap').style.opacity = type === 'digital' ? '0.4' : '1';
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+let curType='sm';let curColor='Classic Black';
+function setType(el,type,price,prefix){
+  document.querySelectorAll('.type-pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');curType=type;
+  document.getElementById('prodPrice').textContent=price;
+  document.getElementById('prodCta').innerHTML=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg> Order Now — ${price}`;
+  document.getElementById('colorOpt').style.display=type==='d'?'none':'block';
+  document.querySelectorAll('.fi').forEach(i=>i.style.display=type==='d'?'none':'flex');
+  const f=document.getElementById('incFrame');
+  if(f)f.textContent=type==='d'?'Printable QR card (print at home)':`Premium framed print (${type==='sm'?'12×16"':'16×20"'}) — matte finish, Ayous wood frame`;
+  document.getElementById('confFrame').style.opacity=type==='d'?'0.4':'1';
+  document.getElementById('previewLabel').textContent=prefix+curColor;
 }
-
-function selectColor(el){
-  document.querySelectorAll('.config-color').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  const hex = el.dataset.hex;
-  currentColorLabel = el.dataset.label;
-  document.getElementById('configFrame').style.background = hex;
-  updatePreviewLabel(SIZE_LABELS[currentType]);
+function setColor(el,hex,label){
+  document.querySelectorAll('.cswatch').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');curColor=label;
+  document.getElementById('confFrame').style.background=hex;
+  const p={'sm':'12×16" · ','lg':'16×20" · ','d':'Digital · '};
+  document.getElementById('previewLabel').textContent=p[curType]+label;
 }
-
-function updatePreviewLabel(sizeLabel){
-  document.getElementById('previewLabel').textContent = sizeLabel + currentColorLabel;
-}
-
-// ── CURSOR ──
-const cur=document.getElementById('cur');
-const ring=document.getElementById('curRing');
-document.addEventListener('mousemove',e=>{
-  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
-  setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},50);
-});
-document.querySelectorAll('a,button,.occ-card,.pkg-card,.frame-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';ring.style.width='48px';ring.style.height='48px';ring.style.opacity='.7';});
-  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='32px';ring.style.height='32px';ring.style.opacity='.4';});
-});
-
-// ── PARTICLES ──
-(function(){
-  const c=document.getElementById('particles');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  const hero=document.querySelector('.hero');
-  let W,H,dpr=Math.min(window.devicePixelRatio||1,2);
-  function resize(){const r=hero.getBoundingClientRect();W=r.width;H=r.height;c.style.width=W+'px';c.style.height=H+'px';c.width=W*dpr;c.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
-  function mk(){return{x:Math.random()*W,y:Math.random()*H,r:2+Math.random()*8,vx:(Math.random()-.5)*.15,vy:-.05-Math.random()*.2,a:.3+Math.random()*.4,rot:Math.random()*Math.PI*2,vr:(Math.random()-.5)*.015,ph:Math.random()*Math.PI*2};}
-  let ps=[];
-  function init(){resize();ps=Array.from({length:20},mk);}
-  function draw(t){
-    ctx.clearRect(0,0,W,H);
-    for(const p of ps){
-      p.x+=p.vx+Math.sin(t/2400+p.ph)*.1;p.y+=p.vy;p.rot+=p.vr;
-      if(p.y+p.r<-20){p.y=H+20;p.x=Math.random()*W;}
-      if(p.x<-40)p.x=W+40;if(p.x>W+40)p.x=-40;
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
-      ctx.globalAlpha=p.a*.6;
-      const g=ctx.createRadialGradient(0,0,0,0,0,p.r*1.2);
-      g.addColorStop(0,'#b86858');g.addColorStop(1,'#b8685800');
-      ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,0,p.r*.5,p.r,0,0,Math.PI*2);ctx.fill();
-      ctx.restore();
-    }
-    requestAnimationFrame(draw);
-  }
-  window.addEventListener('resize',resize);
-  init();requestAnimationFrame(draw);
-})();
-
-// ── SCROLL REVEALS ──
-const io=new IntersectionObserver(es=>{
-  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
-},{threshold:.1,rootMargin:'0px 0px -6% 0px'});
-document.querySelectorAll('.reveal,.reveal-scale').forEach(el=>io.observe(el));
-
-// ── MOBILE MENU ──
-function toggleMenu(){
-  const links=document.querySelector('.nav-links');
-  const btn=document.getElementById('menuToggle');
-  const isOpen=links.classList.contains('open');
-  links.classList.toggle('open',!isOpen);
-  btn.textContent=isOpen?'☰':'✕';
-}
-// Close menu when link clicked
-document.querySelectorAll('.nav-links a').forEach(a=>{
-  a.addEventListener('click',()=>{
-    document.querySelector('.nav-links').classList.remove('open');
-    document.getElementById('menuToggle').textContent='☰';
-  });
-});
-
-// ── NAV SCROLL ──
-window.addEventListener('scroll',()=>{
-  const nav=document.getElementById('nav');
-  nav.style.boxShadow=window.scrollY>20?'0 4px 24px rgba(30,20,10,.08)':'none';
-},{passive:true});
-
-// ── FAQ ──
-function toggleFaq(el){
-  const item=el.parentElement;
-  const isOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
-  if(!isOpen)item.classList.add('open');
-}
+function faq(el){const i=el.parentElement;const o=i.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(x=>x.classList.remove('open'));if(!o)i.classList.add('open');}
 </script>
 </body>
 </html>
