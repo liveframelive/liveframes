@@ -529,6 +529,97 @@ footer{
 .reveal-scale{opacity:0;transform:scale(.96);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);}
 .reveal-scale.in{opacity:1;transform:none;}
 
+/* ══ PRODUCT CONFIGURATOR ══ */
+.configurator{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,64px);align-items:start;}
+.config-preview-sticky{position:sticky;top:90px;}
+.config-frame-wrap{
+  background:var(--cream2);border-radius:20px;padding:24px;
+  display:flex;align-items:center;justify-content:center;
+  min-height:320px;margin-bottom:14px;
+  border:1px solid var(--line);
+}
+.config-frame{
+  border-radius:8px;padding:12px;
+  box-shadow:0 20px 48px -12px rgba(0,0,0,.4),0 4px 12px -4px rgba(0,0,0,.2);
+  transition:background .4s ease;
+  width:180px;
+}
+.config-mat{
+  background:var(--cream);border-radius:4px;
+  aspect-ratio:3/4;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;position:relative;overflow:hidden;
+}
+.config-photo-area{
+  width:100%;flex:1;
+  background:linear-gradient(135deg,#d8c8b4,#c0a890);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(60,40,20,.35);
+}
+.config-qr-corner{
+  position:absolute;bottom:6px;right:6px;
+  background:rgba(0,0,0,.7);border-radius:4px;
+  padding:4px;display:flex;
+}
+.config-preview-label{text-align:center;font-size:12px;font-weight:600;color:var(--ink-soft);letter-spacing:.04em;}
+.config-badge{
+  text-align:center;margin-top:8px;
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--rose);font-weight:700;
+}
+.config-price-box{
+  background:var(--cream2);border-radius:12px;padding:16px 20px;
+  border:1px solid var(--line);
+}
+.config-step{margin-bottom:24px;}
+.config-step-label{
+  font-size:10px;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--ink-mute);font-weight:700;margin-bottom:12px;
+}
+.config-opts-row{display:flex;gap:10px;flex-wrap:wrap;}
+.config-opt{
+  flex:1;min-width:100px;
+  background:var(--cream2);border:2px solid var(--line);
+  border-radius:12px;padding:14px 10px;text-align:center;
+  cursor:pointer;transition:all .2s;
+}
+.config-opt:hover{border-color:rgba(184,104,88,.4);}
+.config-opt.selected{border-color:var(--rose);background:rgba(184,104,88,.06);}
+.config-opt-icon{font-size:20px;margin-bottom:6px;}
+.config-opt-name{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.config-opt-price{font-size:13px;color:var(--rose);font-weight:700;}
+.config-color-row{display:flex;gap:12px;flex-wrap:wrap;}
+.config-color{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;padding:8px 12px;border-radius:10px;
+  border:2px solid transparent;transition:all .2s;
+}
+.config-color:hover{border-color:rgba(184,104,88,.3);}
+.config-color.selected{border-color:var(--rose);background:rgba(184,104,88,.06);}
+.config-color-dot{width:28px;height:28px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.config-color span{font-size:10px;color:var(--ink-soft);font-weight:600;letter-spacing:.04em;white-space:nowrap;}
+.include-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink-soft);font-weight:500;line-height:1.5;}
+.include-check{color:var(--rose);font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.config-cta{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--rose);color:#fff;border-radius:50px;
+  padding:16px 28px;font-size:14px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+  transition:all .2s;box-shadow:0 8px 28px -8px rgba(184,104,88,.5);
+  width:100%;
+}
+.config-cta:hover{background:var(--rose-d);transform:translateY(-2px);box-shadow:0 14px 36px -8px rgba(184,104,88,.55);}
+.delivery-box{margin-top:20px;display:flex;flex-direction:column;gap:12px;padding:20px;background:var(--cream2);border-radius:14px;border:1px solid var(--line);}
+.delivery-item{display:flex;align-items:flex-start;gap:12px;}
+.delivery-item svg{stroke:var(--rose);flex-shrink:0;margin-top:2px;}
+.delivery-item div{display:flex;flex-direction:column;gap:2px;}
+.delivery-item strong{font-size:13px;font-weight:700;color:var(--ink);}
+.delivery-item span{font-size:11px;color:var(--ink-mute);}
+@media(max-width:768px){
+  .configurator{grid-template-columns:1fr;}
+  .config-preview-sticky{position:static;}
+  .config-frame-wrap{min-height:240px;}
+}
 /* ══ RESPONSIVE ══ */
 @media(max-width:768px){
   .hero{grid-template-columns:1fr;padding-top:100px;}
@@ -762,114 +853,162 @@ footer{
   </div>
 </section>
 
-<!-- ══ PACKAGES ══ -->
-<section class="packages" id="packages">
+<!-- ══ PRODUCT CONFIGURATOR (Vistaprint style) ══ -->
+<section id="packages" style="background:var(--cream);padding:clamp(60px,10vw,100px) clamp(20px,5vw,60px);">
   <div style="max-width:1100px;margin:0 auto;">
-    <div style="text-align:center;max-width:560px;margin:0 auto;">
-      <div class="section-tag reveal">Simple pricing</div>
-      <h2 class="section-title reveal d1">Choose your <em>MemoreLive</em></h2>
-      <p class="section-sub reveal d2" style="margin:0 auto;">All packages include a handcrafted memory page, background music, personal letter and free shipping.</p>
-    </div>
-    <div class="packages-grid" style="margin-top:56px;">
-      <div class="pkg-card reveal d1">
-        <span class="pkg-icon">📱</span>
-        <div class="pkg-name">Digital</div>
-        <div class="pkg-tagline">Perfect for the digital age</div>
-        <div class="pkg-price">
-          <span class="currency">$</span><span class="amount">49</span>
-          <div class="note">One-time · No subscription</div>
-        </div>
-        <ul class="pkg-features">
-          <li>Handcrafted memory page</li>
-          <li>Unlimited photos</li>
-          <li>Video messages</li>
-          <li>Personal letter</li>
-          <li>Background music</li>
-          <li>Printable QR card</li>
-          <li>Hosted forever</li>
-        </ul>
-        <a href="/order" class="pkg-cta outline">Get Started</a>
-      </div>
-      <div class="pkg-card featured reveal d2">
-        <div class="pkg-badge">Most Popular</div>
-        <span class="pkg-icon">🖼</span>
-        <div class="pkg-name">Framed 12×16"</div>
-        <div class="pkg-tagline">The classic LiveFrame experience</div>
-        <div class="pkg-price">
-          <span class="currency">$</span><span class="amount">99</span>
-          <div class="note">Free worldwide shipping included</div>
-        </div>
-        <ul class="pkg-features">
-          <li>Everything in Digital</li>
-          <li>Premium 12×16" framed print</li>
-          <li>QR code embedded in frame</li>
-          <li>Choice of 3 frame colours</li>
-          <li>Free worldwide shipping</li>
-          <li>Gift-ready packaging</li>
-        </ul>
-        <a href="/order" class="pkg-cta">Order Now 🌹</a>
-      </div>
-      <div class="pkg-card reveal d3">
-        <span class="pkg-icon">✨</span>
-        <div class="pkg-name">Framed 16×20"</div>
-        <div class="pkg-tagline">Statement piece for special walls</div>
-        <div class="pkg-price">
-          <span class="currency">$</span><span class="amount">139</span>
-          <div class="note">Free worldwide shipping included</div>
-        </div>
-        <ul class="pkg-features">
-          <li>Everything in Digital</li>
-          <li>Large 16×20" framed print</li>
-          <li>QR code embedded in frame</li>
-          <li>Choice of 3 frame colours</li>
-          <li>Free worldwide shipping</li>
-          <li>Premium gift packaging</li>
-        </ul>
-        <a href="/order" class="pkg-cta outline">Order Now</a>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ══ FRAME OPTIONS ══ -->
-<section class="frames">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="text-align:center;max-width:500px;margin:0 auto;">
-      <div class="section-tag reveal">Frame colours</div>
-      <h2 class="section-title reveal d1">Pick your <em>perfect</em> frame</h2>
+    <!-- Section header -->
+    <div style="text-align:center;max-width:560px;margin:0 auto 56px;">
+      <div class="section-tag reveal">Build your order</div>
+      <h2 class="section-title reveal d1">Create your <em>MemoreLive</em></h2>
+      <p class="section-sub reveal d2" style="margin:0 auto;">Choose your options below. All packages include a handcrafted memory page, music, personal letter and free shipping.</p>
     </div>
-    <div class="frames-grid">
-      <div class="frame-card reveal d1">
-        <div class="frame-preview" style="background:#f0ece4;">
-          <div class="frame-preview-inner" style="background:#1a1208;box-shadow:0 8px 24px rgba(0,0,0,.3);">
-            <div class="frame-preview-mat">Photo</div>
+
+    <!-- Product configurator -->
+    <div class="configurator reveal">
+
+      <!-- LEFT: Product preview -->
+      <div class="config-preview">
+        <div class="config-preview-sticky">
+          <div class="config-frame-wrap" id="frameWrap">
+            <div class="config-frame" id="configFrame" style="background:#1a1208;">
+              <div class="config-mat">
+                <div class="config-photo-area">
+                  <span>Your Photo</span>
+                </div>
+                <div class="config-qr-corner">
+                  <svg viewBox="0 0 24 24" fill="white" width="14" height="14"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM19 14h2v2h-2zM14 19h5v2h-5zM19 19h2v2h-2z"/></svg>
+                </div>
+              </div>
+            </div>
           </div>
+          <div class="config-preview-label" id="previewLabel">12×16" · Classic Black</div>
+          <div class="config-badge">✨ QR code hidden inside</div>
         </div>
-        <div class="frame-card-info"><h4>Classic Black</h4><p>Timeless & elegant</p></div>
       </div>
-      <div class="frame-card reveal d2">
-        <div class="frame-preview" style="background:#f5f0e8;">
-          <div class="frame-preview-inner" style="background:#f0ece8;border:2px solid #e0d8d0;box-shadow:0 8px 24px rgba(0,0,0,.1);">
-            <div class="frame-preview-mat">Photo</div>
+
+      <!-- RIGHT: Options -->
+      <div class="config-options">
+
+        <!-- Product name + rating -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--rose);margin-bottom:8px;">MemoreLive Frame</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,38px);font-weight:400;line-height:1.1;margin-bottom:10px;">Personalised Memory Frame <em style="color:var(--rose);font-style:italic;">+ Living Page</em></h2>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <span style="color:var(--gold);font-size:14px;letter-spacing:2px;">★★★★★</span>
+            <span style="font-size:12px;color:var(--ink-soft);font-weight:500;">4.9 · 200+ happy customers</span>
+          </div>
+          <div style="font-size:12px;color:var(--sage);font-weight:600;letter-spacing:.04em;">✓ Free worldwide shipping · Delivered in 6-8 business days</div>
+        </div>
+
+        <!-- Price display -->
+        <div class="config-price-box">
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--rose);line-height:1;" id="configPrice">$99</span>
+            <span style="font-size:13px;color:var(--ink-mute);font-weight:500;">USD · one-time</span>
+          </div>
+          <div style="font-size:11px;color:var(--ink-mute);margin-top:4px;letter-spacing:.04em;">No subscription. No hidden fees. Hosted forever.</div>
+        </div>
+
+        <div style="height:1px;background:var(--line);margin:20px 0;"></div>
+
+        <!-- Step 1: Product type -->
+        <div class="config-step">
+          <div class="config-step-label">1 · Product type</div>
+          <div class="config-opts-row">
+            <div class="config-opt selected" data-type="framed-sm" onclick="selectType(this,'framed-sm','$99','12×16" · ')">
+              <div class="config-opt-icon">🖼</div>
+              <div class="config-opt-name">12×16" Framed</div>
+              <div class="config-opt-price">$99</div>
+            </div>
+            <div class="config-opt" data-type="framed-lg" onclick="selectType(this,'framed-lg','$139','16×20" · ')">
+              <div class="config-opt-icon">✨</div>
+              <div class="config-opt-name">16×20" Framed</div>
+              <div class="config-opt-price">$139</div>
+            </div>
+            <div class="config-opt" data-type="digital" onclick="selectType(this,'digital','$49','Digital · ')">
+              <div class="config-opt-icon">📱</div>
+              <div class="config-opt-name">Digital Only</div>
+              <div class="config-opt-price">$49</div>
+            </div>
           </div>
         </div>
-        <div class="frame-card-info"><h4>Clean White</h4><p>Fresh & modern</p></div>
-      </div>
-      <div class="frame-card reveal d3">
-        <div class="frame-preview" style="background:#f0ebe0;">
-          <div class="frame-preview-inner" style="background:#8B6914;box-shadow:0 8px 24px rgba(80,50,10,.25);">
-            <div class="frame-preview-mat">Photo</div>
+
+        <!-- Step 2: Frame colour (hidden for digital) -->
+        <div class="config-step" id="frameColorStep">
+          <div class="config-step-label">2 · Frame colour</div>
+          <div class="config-color-row">
+            <div class="config-color selected" data-color="black" data-hex="#1a1208" data-label="Classic Black" onclick="selectColor(this)" title="Classic Black">
+              <div class="config-color-dot" style="background:#1a1208;"></div>
+              <span>Black</span>
+            </div>
+            <div class="config-color" data-color="white" data-hex="#f0ece8" data-label="Clean White" onclick="selectColor(this)" title="Clean White">
+              <div class="config-color-dot" style="background:#f0ece8;border:1.5px solid #d0c8c0;"></div>
+              <span>White</span>
+            </div>
+            <div class="config-color" data-color="natural" data-hex="#8B6914" data-label="Natural Wood" onclick="selectColor(this)" title="Natural Wood">
+              <div class="config-color-dot" style="background:#8B6914;"></div>
+              <span>Natural Wood</span>
+            </div>
+            <div class="config-color" data-color="dark" data-hex="#3a2c20" data-label="Dark Wood" onclick="selectColor(this)" title="Dark Wood">
+              <div class="config-color-dot" style="background:#3a2c20;"></div>
+              <span>Dark Wood</span>
+            </div>
           </div>
         </div>
-        <div class="frame-card-info"><h4>Natural Wood</h4><p>Warm & organic</p></div>
-      </div>
-      <div class="frame-card reveal d4">
-        <div class="frame-preview" style="background:#ede8e0;">
-          <div class="frame-preview-inner" style="background:#3a2c20;box-shadow:0 8px 24px rgba(20,10,5,.3);">
-            <div class="frame-preview-mat">Photo</div>
+
+        <div style="height:1px;background:var(--line);margin:8px 0 20px;"></div>
+
+        <!-- What's included -->
+        <div style="margin-bottom:24px;">
+          <div class="config-step-label" style="margin-bottom:12px;">What's included</div>
+          <div id="includesList" style="display:flex;flex-direction:column;gap:8px;">
+            <div class="include-item"><span class="include-check">✓</span><span>Premium framed print (12×16") — matte finish, Ayous wood frame</span></div>
+            <div class="include-item"><span class="include-check">✓</span><span>Handcrafted memory page — photos, videos, music & letter</span></div>
+            <div class="include-item"><span class="include-check">✓</span><span>QR code embedded in the frame</span></div>
+            <div class="include-item"><span class="include-check">✓</span><span>Unlimited photos & video links</span></div>
+            <div class="include-item"><span class="include-check">✓</span><span>Background music of your choice</span></div>
+            <div class="include-item"><span class="include-check">✓</span><span>Personal letter written by you</span></div>
+            <div class="include-item"><span class="include-check">✓</span><span>Memory page hosted forever</span></div>
+            <div class="include-item framed-only"><span class="include-check">✓</span><span>Free worldwide shipping (6-8 business days to USA)</span></div>
+            <div class="include-item framed-only"><span class="include-check">✓</span><span>Gift-ready packaging</span></div>
           </div>
         </div>
-        <div class="frame-card-info"><h4>Dark Wood</h4><p>Rich & sophisticated</p></div>
+
+        <!-- CTA -->
+        <a href="/order" class="config-cta" id="configCta">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg>
+          Order Now — $99
+        </a>
+        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--ink-mute);letter-spacing:.04em;">
+          🔒 Secure checkout · 💳 PayPal & Cards accepted
+        </div>
+
+        <!-- Delivery info -->
+        <div class="delivery-box">
+          <div class="delivery-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <div>
+              <strong>Free Shipping</strong>
+              <span>USA · UK · Canada · Australia · Europe</span>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div>
+              <strong>Delivered in 6–8 days</strong>
+              <span>Page ready within 24hrs of file upload</span>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <div>
+              <strong>100% Satisfaction</strong>
+              <span>We'll make it right if anything's not perfect</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -995,6 +1134,51 @@ footer{
 </footer>
 
 <script>
+// ── PRODUCT CONFIGURATOR ──
+const PRICES = {'framed-sm':'$99','framed-lg':'$139','digital':'$49'};
+const SIZE_LABELS = {'framed-sm':'12×16" · ','framed-lg':'16×20" · ','digital':'Digital · '};
+let currentType = 'framed-sm';
+let currentColorLabel = 'Classic Black';
+
+function selectType(el, type, price, sizeLabel){
+  document.querySelectorAll('.config-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  currentType = type;
+  // Update price
+  document.getElementById('configPrice').textContent = price;
+  document.getElementById('configCta').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.2C1.1 8.6 3.1 5 6.5 5c2 0 3.5 1.1 4.5 2.6C12 6.1 13.5 5 15.5 5 18.9 5 20.9 8.6 19.5 11.8 17.5 16.4 12 21 12 21z"/></svg> Order Now — ${price}`;
+  // Show/hide frame color step
+  const frameStep = document.getElementById('frameColorStep');
+  frameStep.style.display = type === 'digital' ? 'none' : 'block';
+  // Show/hide framed-only includes
+  document.querySelectorAll('.framed-only').forEach(el=>{
+    el.style.display = type === 'digital' ? 'none' : 'flex';
+  });
+  // Update includes text for digital
+  if(type === 'digital'){
+    document.getElementById('includesList').querySelector('.include-item span').textContent = 'Printable QR card (print at home)';
+  } else {
+    document.getElementById('includesList').querySelector('.include-item span').textContent = `Premium framed print (${type==='framed-sm'?'12×16"':'16×20"'}) — matte finish, Ayous wood frame`;
+  }
+  // Update preview label
+  updatePreviewLabel(sizeLabel);
+  // Hide frame wrap for digital
+  document.getElementById('frameWrap').style.opacity = type === 'digital' ? '0.4' : '1';
+}
+
+function selectColor(el){
+  document.querySelectorAll('.config-color').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const hex = el.dataset.hex;
+  currentColorLabel = el.dataset.label;
+  document.getElementById('configFrame').style.background = hex;
+  updatePreviewLabel(SIZE_LABELS[currentType]);
+}
+
+function updatePreviewLabel(sizeLabel){
+  document.getElementById('previewLabel').textContent = sizeLabel + currentColorLabel;
+}
+
 // ── CURSOR ──
 const cur=document.getElementById('cur');
 const ring=document.getElementById('curRing');
