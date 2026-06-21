@@ -374,6 +374,19 @@ window.MEM_CFG = {
   </div>
 </div>
 
+<!-- UNSAVED-CHANGES MODAL -->
+<div class="modal" id="exitModal">
+  <div class="modal-card">
+    <h4>Unsaved changes</h4>
+    <p>You've made changes that haven't been saved yet. What would you like to do?</p>
+    <div class="modal-row" style="flex-direction:column;gap:8px;">
+      <button class="m-go" onclick="exitSave()">✓ Save &amp; exit</button>
+      <button class="m-cancel" onclick="exitDiscard()" style="border:1px solid var(--line);background:#fff;">Discard changes</button>
+      <button class="m-cancel" onclick="closeExitModal()" style="background:transparent;color:var(--inkm);border:none;">Keep editing</button>
+    </div>
+  </div>
+</div>
+
 <!-- SAVE OVERLAY -->
 <div class="saving" id="saving">
   <div class="spin"></div>
@@ -407,8 +420,10 @@ const DEFAULTS = {
 
 let S = { texts:{...DEFAULTS}, hero:null, videoOn:true, videos:[], gallery:[{heading:"",photos:[]}], style:{theme:'blush',particles:'petals',typewriter:true,ambient:true,reaction:'hearts'} };
 let edit = false;          // currently in edit mode
+let dirty = false;         // unsaved changes made this edit session
 let authPw = null;         // password the user successfully entered (sent to worker)
 let pendingAction = null;  // action to run after unlocking
+function markDirty(){ dirty = true; }
 
 /* ---------- helpers ---------- */
 function $(id){ return document.getElementById(id); }
@@ -461,7 +476,7 @@ function renderHero(){
       tools.className="tile-tools"; tools.style.cssText="display:flex;position:absolute;top:10px;right:10px;gap:6px;z-index:6";
       tools.innerHTML = '<button class="tt-btn" title="Replace">⟳</button><button class="tt-btn" title="Remove">×</button>';
       tools.children[0].onclick=()=>$("heroFile").click();
-      tools.children[1].onclick=()=>{ S.hero=null; renderHero(); };
+      tools.children[1].onclick=()=>{ S.hero=null; renderHero(); markDirty(); };
       slot.firstChild.appendChild(tools);
     }
   } else if(edit || true){
@@ -473,7 +488,7 @@ function renderHero(){
 $("heroFile").addEventListener("change", function(){
   const f=this.files[0]; this.value="";
   if(!f) return;
-  compress(f, dataUrl=>{ S.hero=dataUrl; renderHero(); });
+  compress(f, dataUrl=>{ S.hero=dataUrl; renderHero(); markDirty(); });
 });
 
 /* ---------- VIDEO SECTION (removable) ---------- */
@@ -491,7 +506,7 @@ function renderVideoSection(){
     ctrl.innerHTML = S.videoOn
       ? '<button class="sec-ctrl-btn">✕ Remove the video section</button>'
       : '<button class="sec-ctrl-btn add">＋ Add the video section back</button>';
-    ctrl.firstChild.onclick=()=>{ S.videoOn=!S.videoOn; renderVideoSection(); };
+    ctrl.firstChild.onclick=()=>{ S.videoOn=!S.videoOn; renderVideoSection(); markDirty(); };
   }
 }
 
@@ -511,8 +526,8 @@ function renderVideos(){
     const tools=document.createElement("div");
     tools.className="vid-tools";
     tools.innerHTML='<button>✎ Caption</button><button>× Remove</button>';
-    tools.children[0].onclick=()=>{ const c=prompt("Caption for this video:", v.caption||""); if(c!==null){ v.caption=c; renderVideos(); } };
-    tools.children[1].onclick=()=>{ S.videos.splice(i,1); renderVideos(); };
+    tools.children[0].onclick=()=>{ const c=prompt("Caption for this video:", v.caption||""); if(c!==null){ v.caption=c; renderVideos(); markDirty(); } };
+    tools.children[1].onclick=()=>{ S.videos.splice(i,1); renderVideos(); markDirty(); };
     wrap.appendChild(tools);
     slot.appendChild(wrap);
   });
@@ -538,12 +553,12 @@ function renderGallery(){
       const h=document.createElement("span"); h.className="gsec-title"; h.textContent=sec.heading||"";
       if(edit){
         h.contentEditable="true"; h.setAttribute("data-ph","Section heading (optional)");
-        h.oninput=()=>{ sec.heading=h.innerText.trim(); };
+        h.oninput=()=>{ sec.heading=h.innerText.trim(); markDirty(); };
       }
       hd.appendChild(h);
       if(edit && S.gallery.length>1){
         const rm=document.createElement("button"); rm.className="gsec-rm"; rm.textContent="✕ Remove this section";
-        rm.onclick=()=>{ S.gallery.splice(si,1); renderGallery(); };
+        rm.onclick=()=>{ S.gallery.splice(si,1); renderGallery(); markDirty(); };
         hd.appendChild(rm);
       }
       slot.appendChild(hd);
@@ -557,12 +572,12 @@ function renderGallery(){
       if(edit){
         const tools=document.createElement("div"); tools.className="tile-tools";
         tools.innerHTML='<button class="tt-btn" title="Remove">×</button>';
-        tools.children[0].onclick=(e)=>{ e.stopPropagation(); sec.photos.splice(pi,1); renderGallery(); };
+        tools.children[0].onclick=(e)=>{ e.stopPropagation(); sec.photos.splice(pi,1); renderGallery(); markDirty(); };
         fig.appendChild(tools);
         const cap=document.createElement("div"); cap.className="cap-edit";
         cap.innerHTML='<input placeholder="Caption (optional)"/>';
         const inp=cap.querySelector("input"); inp.value=p.caption||"";
-        inp.addEventListener("input",e=>{ p.caption=e.target.value; });
+        inp.addEventListener("input",e=>{ p.caption=e.target.value; markDirty(); });
         inp.addEventListener("click",e=>e.stopPropagation());
         fig.appendChild(cap);
       } else {
@@ -581,7 +596,7 @@ function renderGallery(){
   if(edit){
     const addSec=document.createElement("button"); addSec.className="add-section";
     addSec.textContent="＋ Add another section";
-    addSec.onclick=()=>{ S.gallery.push({heading:"New chapter",photos:[]}); renderGallery(); };
+    addSec.onclick=()=>{ S.gallery.push({heading:"New chapter",photos:[]}); renderGallery(); markDirty(); };
     slot.appendChild(addSec);
   }
 }
@@ -593,7 +608,7 @@ $("photoFiles").addEventListener("change", function(){
   files.forEach(f=>{
     compress(f, dataUrl=>{
       sec.photos.push({src:dataUrl, caption:"", _new:true});
-      done++; if(done===files.length) renderGallery();
+      markDirty(); done++; if(done===files.length) renderGallery();
     });
   });
 });
@@ -624,20 +639,27 @@ function gate(action){
 }
 function requestEdit(){ gate(null); }
 function enterEdit(){
-  edit=true; document.body.classList.add("edit");
+  edit=true; dirty=false; document.body.classList.add("edit");
   renderAll();
   // live text editing
   document.querySelectorAll("[data-key]").forEach(el=>{
-    el.oninput=()=>{ S.texts[el.getAttribute("data-key")] = el.innerText.trim(); };
+    el.oninput=()=>{ S.texts[el.getAttribute("data-key")] = el.innerText.trim(); markDirty(); };
   });
   applyTypewriter();   // show full title (no animation) while editing
   toast("Edit mode on");
 }
 function exitEdit(){
+  if(dirty){ $("exitModal").classList.add("open"); return; }   // ask before losing changes
+  leaveEdit();
+}
+function leaveEdit(){
   edit=false; authPw=null; document.body.classList.remove("edit");
   renderAll();
   applyParticles(); applyAmbient(); applyTypewriter();
 }
+function closeExitModal(){ $("exitModal").classList.remove("open"); }
+function exitDiscard(){ closeExitModal(); location.reload(); }     // revert to last saved version
+async function exitSave(){ closeExitModal(); await saveAll(); }    // saveAll persists, then reloads
 
 /* password modal */
 function openPw(){ $("pwErr").textContent=""; $("pwInput").value=""; $("pwModal").classList.add("open"); setTimeout(()=>$("pwInput").focus(),50); }
@@ -662,7 +684,7 @@ function confirmAddVideo(){
   const id=ytId($("vidInput").value);
   if(!id){ $("vidErr").textContent="Couldn't read that link. Paste a YouTube URL."; return; }
   S.videos.push({id, orientation:vidOrient, caption:""});
-  closeVidModal(); renderVideos();
+  closeVidModal(); renderVideos(); markDirty();
 }
 
 /* ---------- SAVE → WORKER → GITHUB ---------- */
@@ -866,16 +888,16 @@ function syncFxUI(){
   $("fxAmb").classList.toggle("on", !!(S.style&&S.style.ambient));
 }
 document.querySelectorAll("#fxThemes .th-sw").forEach(b=>{
-  b.onclick=()=>{ S.style.theme=b.dataset.t; syncFxUI(); applyTheme(); };
+  b.onclick=()=>{ S.style.theme=b.dataset.t; syncFxUI(); applyTheme(); markDirty(); };
 });
-(function(){ const fc=$("fxColor"); if(fc) fc.addEventListener("input", e=>{ S.style.theme="custom"; S.style.themeColor=e.target.value; syncFxUI(); applyTheme(); }); })();
-function toggleTw(){ S.style.typewriter=!S.style.typewriter; syncFxUI(); applyTypewriter(); }
-function toggleAmb(){ S.style.ambient=!S.style.ambient; syncFxUI(); applyAmbient(); }
+(function(){ const fc=$("fxColor"); if(fc) fc.addEventListener("input", e=>{ S.style.theme="custom"; S.style.themeColor=e.target.value; syncFxUI(); applyTheme(); markDirty(); }); })();
+function toggleTw(){ S.style.typewriter=!S.style.typewriter; syncFxUI(); applyTypewriter(); markDirty(); }
+function toggleAmb(){ S.style.ambient=!S.style.ambient; syncFxUI(); applyAmbient(); markDirty(); }
 document.querySelectorAll("#fxParticles button").forEach(b=>{
-  b.onclick=()=>{ S.style.particles=b.dataset.v; syncFxUI(); applyParticles(); };
+  b.onclick=()=>{ S.style.particles=b.dataset.v; syncFxUI(); applyParticles(); markDirty(); };
 });
 document.querySelectorAll("#fxReaction button").forEach(b=>{
-  b.onclick=()=>{ S.style.reaction=b.dataset.v; syncFxUI(); renderReaction(); };
+  b.onclick=()=>{ S.style.reaction=b.dataset.v; syncFxUI(); renderReaction(); markDirty(); };
 });
 
 /* ---------- TAP-TO-SEND REACTION ---------- */
