@@ -217,21 +217,33 @@ body.edit .gsec-title{outline:1px dashed rgba(168,101,85,.5);outline-offset:5px;
 .lbox h3{line-height:1.3;}
 .cls .qt{line-height:1.42;}
 
-/* ── POSTER HERO (cut-out subject over a giant word) ── */
-.poster-top,.bigword{display:none;}
-body.hero-poster .top-mark,body.hero-poster .occ .eyebrow,body.hero-poster .hero .sc{display:none;}
-body.hero-poster .poster-top,body.hero-poster .bigword{display:block;}
-body.hero-poster .hero{display:block;text-align:center;min-height:100svh;padding:clamp(22px,6vw,40px) 14px 0;overflow:hidden;}
+/* ── POSTER HERO (cut-out subject over giant words, in a fixed 4:5 box) ── */
+.poster-top,.pstage{display:none;}
+body.hero-poster .top-mark,body.hero-poster .occ .eyebrow,body.hero-poster .hero .sc,body.hero-poster .pw{display:none;}
+body.hero-poster .poster-top{display:block;}
+body.hero-poster .pstage{display:block;}
+body.hero-poster .hero{display:flex;flex-direction:column;align-items:center;text-align:center;min-height:auto;padding:clamp(16px,5vw,30px) 0 clamp(18px,5vw,36px);overflow:hidden;gap:0;}
 body.hero-poster .hero::before{display:none;}
-.poster-top{font-family:"Anton",Impact,sans-serif;font-size:clamp(28px,9vw,46px);letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;color:var(--ink);position:relative;z-index:4;}
-.bigword{position:absolute;left:0;right:0;top:44%;transform:translateY(-50%);z-index:1;font-family:"Anton",Impact,sans-serif;white-space:pre-line;line-height:.76;letter-spacing:.01em;font-size:clamp(88px,30vw,150px);text-transform:uppercase;color:color-mix(in srgb,var(--ink) 24%,transparent);user-select:none;}
-body.hero-poster .pw{position:relative;z-index:3;width:auto;max-width:none;margin:clamp(6px,2vw,14px) auto 0;}
-body.hero-poster .pw .cutout{position:relative;display:inline-block;}
-body.hero-poster .pw .cutout img{height:clamp(360px,60svh,560px);width:auto;max-width:94%;display:block;margin:0 auto;filter:drop-shadow(0 20px 20px rgba(70,40,30,.3));}
-body.hero-poster .pw .cutout-add{width:min(280px,72vw);aspect-ratio:3/4;margin:0 auto;}
-body.hero-poster .occ{position:absolute;left:0;right:0;bottom:12%;z-index:4;margin:0;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding:0 18px;pointer-events:none;text-align:left;}
-body.hero-poster .occ h1{font-family:"Anton",Impact,sans-serif;font-style:normal;font-weight:400;font-size:clamp(20px,6.5vw,30px);line-height:1;letter-spacing:.02em;color:var(--ink);margin:0;min-height:0;pointer-events:auto;}
-body.hero-poster .occ .fl{margin:0;text-align:right;font-family:var(--bf);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accd);font-weight:700;pointer-events:auto;}
+.poster-top{font-family:"Anton",Impact,sans-serif;font-size:clamp(26px,8vw,42px);letter-spacing:.34em;text-indent:.34em;text-transform:uppercase;color:var(--ink);z-index:3;}
+/* the fixed poster box (4:5) */
+.pstage{position:relative;width:min(440px,100vw);aspect-ratio:4/5;margin-top:clamp(2px,1.5vw,10px);overflow:hidden;}
+.pstage .bw{position:absolute;left:1%;right:1%;font-family:"Anton",Impact,sans-serif;line-height:.74;text-transform:uppercase;color:color-mix(in srgb,var(--ink) 26%,transparent);white-space:nowrap;z-index:1;text-align:center;}
+.pstage .bw1{top:4%;}
+.pstage .bw2{top:46%;}
+.pstage .pphoto{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end;justify-content:center;}
+.pstage .pphoto img{height:100%;width:auto;max-width:none;display:block;transform-origin:bottom center;filter:drop-shadow(0 16px 16px rgba(70,40,30,.28));}
+.pstage .cutout-add{position:absolute;left:50%;bottom:0;transform:translateX(-50%);margin:0;width:min(250px,68%);aspect-ratio:3/4;z-index:2;}
+body.edit.hero-poster .pstage{outline:1px dashed rgba(168,101,85,.55);outline-offset:3px;}
+body.edit.hero-poster .pstage .pphoto img{cursor:grab;touch-action:none;}
+.pp-ctrl{position:absolute;right:8px;bottom:8px;z-index:5;display:none;gap:5px;align-items:center;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:30px;padding:4px;}
+body.edit.hero-poster .pp-ctrl{display:flex;}
+.pp-ctrl button{width:30px;height:30px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:15px;cursor:pointer;line-height:1;display:grid;place-items:center;}
+.pp-hint{position:absolute;left:50%;top:8px;transform:translateX(-50%);z-index:5;display:none;font-family:var(--bf);font-size:11px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:20px;padding:3px 11px;color:var(--accd);white-space:nowrap;}
+body.edit.hero-poster .pp-hint{display:block;}
+/* name + role under the box */
+body.hero-poster .occ{margin:clamp(12px,3vw,20px) 0 0;width:min(440px,100vw);display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding:0 16px;text-align:left;}
+body.hero-poster .occ h1{font-family:"Anton",Impact,sans-serif;font-style:normal;font-weight:400;font-size:clamp(20px,6vw,30px);line-height:1;letter-spacing:.02em;color:var(--ink);margin:0;min-height:0;}
+body.hero-poster .occ .fl{margin:0;text-align:right;font-family:var(--bf);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accd);font-weight:700;}
 body.hero-poster .occ .fl::before{content:"";display:block;width:42px;height:3px;background:var(--accd);margin:0 0 6px auto;}
 </style>
 </head>
@@ -242,7 +254,7 @@ body.hero-poster .occ .fl::before{content:"";display:block;width:42px;height:3px
 window.MEM_CFG = {
   slug:     "test-109",
   worker:   "https://memorelive-save.liveframelive.workers.dev",
-  password: "1111",
+  password: "1234",
   saveKey:  "1111"
 };
 </script>
@@ -255,8 +267,13 @@ window.MEM_CFG = {
     <canvas class="particles" id="cv"></canvas>
     <div class="top-mark" data-key="topmark">A keepsake</div>
     <div class="poster-top" data-key="htop">HAPPY</div>
-    <div class="bigword" data-key="hbig" aria-hidden="true">BIRTH
-DAY</div>
+    <div class="pstage" id="pstage">
+      <div class="bw bw1" data-key="hbig1">BIRTH</div>
+      <div class="bw bw2" data-key="hbig2">DAY</div>
+      <div class="pphoto" id="pphoto"></div>
+      <div class="pp-hint">drag the photo to move it</div>
+      <div class="pp-ctrl"><button type="button" data-z="out" aria-label="Smaller">−</button><button type="button" data-z="in" aria-label="Bigger">+</button></div>
+    </div>
     <div class="pw" id="heroSlot"></div>
     <div class="occ">
       <p class="eyebrow" data-key="occ">A Keepsake</p>
@@ -459,7 +476,7 @@ const PW  = CFG.password || "1111";
 
 const DEFAULTS = {
   topmark:"A keepsake", occ:"A Keepsake", title:"Your Title", forline:"A line just for them",
-  htop:"HAPPY", hbig:"BIRTH\nDAY",
+  htop:"HAPPY", hbig1:"BIRTH", hbig2:"DAY",
   vidNum:"Chapter I", vidH:"A little something for you", vidSub:"Press play. Take your time.",
   gallNum:"Chapter II", gallH:"Moments, kept gently", gallSub:"A garden of small days. Each one a reason.",
   letterNum:"Chapter III", letterHead:"A letter, just for you",
@@ -470,7 +487,7 @@ const DEFAULTS = {
   cs:"Love you, always."
 };
 
-let S = { texts:{...DEFAULTS}, hero:null, videoOn:true, videos:[], gallery:[{heading:"",photos:[]}], style:{theme:'blush',hero:'portrait',particles:'petals',typewriter:true,ambient:true,reaction:'hearts'} };
+let S = { texts:{...DEFAULTS}, hero:null, videoOn:true, videos:[], gallery:[{heading:"",photos:[]}], style:{theme:'blush',hero:'portrait',heroX:0,heroY:0,heroScale:1,particles:'petals',typewriter:true,ambient:true,reaction:'hearts'} };
 let edit = false;          // currently in edit mode
 let dirty = false;         // unsaved changes made this edit session
 let authPw = null;         // password the user successfully entered (sent to worker)
@@ -521,26 +538,67 @@ function renderTexts(){
 /* ---------- HERO ---------- */
 function applyHeroStyle(){ document.body.classList.toggle("hero-poster", !!(S.style && S.style.hero==="poster")); }
 function renderHero(){
-  const slot = $("heroSlot");
   const poster = !!(S.style && S.style.hero==="poster");
   applyHeroStyle();
+  const slot = poster ? $("pphoto") : $("heroSlot");
+  if(!slot) return;
   if(S.hero){
     slot.innerHTML = poster
-      ? '<div class="cutout"><img src="'+esc(S.hero)+'" alt=""/></div>'
+      ? '<img src="'+esc(S.hero)+'" alt=""/>'
       : '<div class="portrait-wrap"><img class="portrait" src="'+esc(S.hero)+'" alt=""/></div>';
     if(edit){
       const tools = document.createElement("div");
-      tools.className="tile-tools"; tools.style.cssText="display:flex;position:absolute;top:10px;right:10px;gap:6px;z-index:7";
+      tools.className="tile-tools"; tools.style.cssText="display:flex;position:absolute;top:8px;left:8px;gap:6px;z-index:8";
       tools.innerHTML = '<button class="tt-btn" title="Replace">⟳</button><button class="tt-btn" title="Remove">×</button>';
-      tools.children[0].onclick=()=>$("heroFile").click();
-      tools.children[1].onclick=()=>{ S.hero=null; renderHero(); markDirty(); };
-      slot.firstChild.appendChild(tools);
+      tools.children[0].onclick=(e)=>{ e.stopPropagation(); $("heroFile").click(); };
+      tools.children[1].onclick=(e)=>{ e.stopPropagation(); S.hero=null; renderHero(); markDirty(); };
+      (poster ? slot : slot.firstChild).appendChild(tools);
     }
+    if(poster){ applyHeroTransform(); attachHeroDrag(); }
   } else {
-    // empty: + placeholder (visible to first-time visitor too)
-    slot.innerHTML = '<div class="add-slot '+(poster?"cutout-add":"hero-add")+'"><div class="plus">+</div><div>'+(poster?"Add the cut-out photo":"Add the main photo")+'</div></div>';
+    slot.innerHTML = '<div class="add-slot '+(poster?"cutout-add":"hero-add")+'"><div class="plus">+</div><div>'+(poster?'Add cut-out photo<br><small style="opacity:.7">PNG, no background</small>':"Add the main photo")+'</div></div>';
     slot.firstChild.onclick = ()=> gate(()=>$("heroFile").click());
   }
+  if(poster){ wirePosterCtrl(); fitBigWords(); }
+}
+/* poster: scale each big word to fill the stage width */
+function fitBigWords(){
+  const stage=document.querySelector(".pstage"); if(!stage) return;
+  const W=stage.clientWidth*0.98; if(!W) return;
+  stage.querySelectorAll(".bw").forEach(el=>{
+    el.style.fontSize="100px";
+    el.style.width="max-content";                 // measure the real text width
+    const tw=el.getBoundingClientRect().width;
+    el.style.width="";                             // restore (fills the box via left/right)
+    if(tw>0) el.style.fontSize=Math.min(320, 100*W/tw)+"px";
+  });
+}
+/* poster: photo position (drag) + zoom */
+function applyHeroTransform(){
+  const img=document.querySelector(".pphoto img"); if(!img) return;
+  const s=S.style||{};
+  img.style.transform="translate("+(s.heroX||0)+"%,"+(s.heroY||0)+"%) scale("+(s.heroScale||1)+")";
+}
+let _hdrag=null;
+function attachHeroDrag(){
+  const img=document.querySelector(".pphoto img"); if(!img) return;
+  img.onpointerdown=img.onpointermove=img.onpointerup=img.onpointercancel=null;
+  if(!edit) return;
+  img.onpointerdown=(e)=>{
+    _hdrag={x:e.clientX,y:e.clientY,ox:(S.style.heroX||0),oy:(S.style.heroY||0),w:img.offsetWidth||1,h:img.offsetHeight||1};
+    try{ img.setPointerCapture(e.pointerId); }catch(_){} e.preventDefault(); };
+  img.onpointermove=(e)=>{ if(!_hdrag) return;
+    S.style.heroX=_hdrag.ox+(e.clientX-_hdrag.x)/_hdrag.w*100;
+    S.style.heroY=_hdrag.oy+(e.clientY-_hdrag.y)/_hdrag.h*100;
+    applyHeroTransform(); };
+  img.onpointerup=img.onpointercancel=()=>{ if(_hdrag){ _hdrag=null; markDirty(); } };
+}
+function wirePosterCtrl(){
+  const ctrl=document.querySelector(".pp-ctrl"); if(!ctrl||ctrl.dataset.w) return; ctrl.dataset.w="1";
+  const zoom=(d)=>{ S.style.heroScale=Math.max(0.4,Math.min(3,(S.style.heroScale||1)+d)); applyHeroTransform(); markDirty(); };
+  const bi=ctrl.querySelector('[data-z="in"]'), bo=ctrl.querySelector('[data-z="out"]');
+  if(bi) bi.onclick=()=>zoom(0.08);
+  if(bo) bo.onclick=()=>zoom(-0.08);
 }
 $("heroFile").addEventListener("change", function(){
   const f=this.files[0]; this.value="";
@@ -696,19 +754,10 @@ function processHeroFile(file, cb){
     if(w>max||h>max){ if(w>h){h=Math.round(h*max/w);w=max;} else {w=Math.round(w*max/h);h=max;} }
     const c=document.createElement("canvas"); c.width=w; c.height=h;
     const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,w,h);
-    let data; try{ data=ctx.getImageData(0,0,w,h).data; }catch(e){ cb(c.toDataURL("image/jpeg",0.82)); return; }
-    let hasAlpha=false,minx=w,miny=h,maxx=-1,maxy=-1;
-    for(let y=0;y<h;y++)for(let x=0;x<w;x++){ const a=data[(y*w+x)*4+3];
-      if(a<250)hasAlpha=true;
-      if(a>14){ if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y; } }
-    if(!hasAlpha){ cb(c.toDataURL("image/jpeg",0.82)); return; }      // ordinary photo
-    if(maxx<minx){ cb(c.toDataURL("image/png")); return; }
-    const pad=Math.round(Math.max(maxx-minx,maxy-miny)*0.015);
-    minx=Math.max(0,minx-pad);miny=Math.max(0,miny-pad);maxx=Math.min(w-1,maxx+pad);maxy=Math.min(h-1,maxy+pad);
-    const cw=maxx-minx+1,ch=maxy-miny+1;
-    const oc=document.createElement("canvas"); oc.width=cw; oc.height=ch;
-    oc.getContext("2d").drawImage(c,minx,miny,cw,ch,0,0,cw,ch);
-    cb(oc.toDataURL("image/png"));                                    // trimmed cut-out
+    // keep transparency (cut-outs) as PNG; flatten ordinary photos to JPEG
+    let png=/png/i.test(file.type||"")||/\.png$/i.test(file.name||"");
+    if(!png){ try{ const d=ctx.getImageData(0,0,w,h).data; for(let i=3;i<d.length;i+=4){ if(d[i]<250){ png=true; break; } } }catch(e){} }
+    cb(png ? c.toDataURL("image/png") : c.toDataURL("image/jpeg",0.82));
   }; img.src=rd.result; };
   rd.readAsDataURL(file);
 }
@@ -725,7 +774,7 @@ function enterEdit(){
   renderAll();
   // live text editing
   document.querySelectorAll("[data-key]").forEach(el=>{
-    el.oninput=()=>{ S.texts[el.getAttribute("data-key")] = el.innerText.trim(); markDirty(); };
+    el.oninput=()=>{ S.texts[el.getAttribute("data-key")] = el.innerText.trim(); if(el.classList.contains("bw")) fitBigWords(); markDirty(); };
   });
   applyTypewriter();   // show full title (no animation) while editing
   toast("Edit mode on");
@@ -1014,6 +1063,10 @@ function burstReaction(){
   }
 }
 $("hbtn").addEventListener("click", burstReaction);
+
+/* poster: keep the big words fitted on resize + once the Anton font loads */
+window.addEventListener("resize", ()=>{ if(document.body.classList.contains("hero-poster")) fitBigWords(); });
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(()=>{ if(document.body.classList.contains("hero-poster")) fitBigWords(); }); }
 
 /* ---------- go ---------- */
 load();
