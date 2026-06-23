@@ -900,8 +900,11 @@ async function saveAll(){
         body:JSON.stringify({ slug:CFG.slug, password:(CFG.saveKey||"1111"), action:"cleanup", keep })});
     }catch(e){ /* old worker without cleanup — harmless */ }
 
-    $("savingMsg").textContent = "Published! Reloading…";
-    setTimeout(()=>location.reload(), 900);
+    $("savingMsg").textContent = "Saved!";
+    await new Promise(r=>setTimeout(r,600));
+    $("saving").classList.remove("open");
+    dirty=false;
+    leaveEdit();
   }catch(err){
     $("saving").classList.remove("open");
     toast("Save failed: " + err.message);
